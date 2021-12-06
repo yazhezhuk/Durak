@@ -1,0 +1,10 @@
+.player1 {
+    display: flex;
+    margin: 25px auto 0;
+    width: 850px;
+    height: 175px;
+
+    /*border: 1px solid black;*/
+
+}
+
