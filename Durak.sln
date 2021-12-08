@@ -2,7 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Durak.Core", "Durak.Core\Durak.Core.csproj", "{41E77FB4-5721-4EAA-BAB1-418983F2926F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Durak.API", "Durak.API\Durak.API.csproj", "{24EF936C-C5F2-49D8-ACB3-C10FA9154F08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Durak.Client", "Durak.Client\Durak.Client.csproj", "{24EF936C-C5F2-49D8-ACB3-C10FA9154F08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Infrastructure", "Core.Infrastructure\Core.Infrastructure.csproj", "{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +20,9 @@ Global
 		{24EF936C-C5F2-49D8-ACB3-C10FA9154F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24EF936C-C5F2-49D8-ACB3-C10FA9154F08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24EF936C-C5F2-49D8-ACB3-C10FA9154F08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

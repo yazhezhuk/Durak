@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Durak.Core.Events
 {
-	public class BaseEvent : INotification
+	public abstract class BaseEvent : INotification
 	{
 		public DateTimeOffset DateOccurred { get; protected set; } = DateTimeOffset.UtcNow;
 	}

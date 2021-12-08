@@ -3,9 +3,8 @@ using Durak.Core.Events;
 
 namespace Durak.Core.Game
 {
-	public abstract class BaseEntity
+	public record ValueObject
 	{
 		public int Id { get; set; }
-		public List<BaseEvent> Events { get; set; }
 	}
 }
