@@ -1,0 +1,10 @@
+.gamePlace {
+    width: 1000px;
+    height: 600px;
+    background: green;
+
+    /*margin: 0 auto;*/
+
+    border: 50px solid #78401b;
+    border-radius: 100px;
+}
