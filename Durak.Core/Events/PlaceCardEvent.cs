@@ -1,7 +1,6 @@
-namespace Durak.Core.Events
-{
-	public class PlaceCardEvent : BaseEvent
-	{
+namespace Durak.Core.Events;
 
-	}
+public class PlaceCardEvent : BaseEvent
+{
+
 }

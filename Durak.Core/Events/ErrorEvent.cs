@@ -1,7 +1,6 @@
-namespace Durak.Core.Events
-{
-	public class ErrorEvent : BaseEvent
-	{
+namespace Durak.Core.Events;
 
-	}
+public class ErrorEvent : BaseEvent
+{
+
 }

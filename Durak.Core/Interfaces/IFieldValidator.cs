@@ -1,12 +1,12 @@
-using Durak.Core.Game;
-using Durak.Core.Game.Fields;
+using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.Fields;
+using Durak.Core.GameModels.Players;
 
-namespace Durak.Core.Interfaces
+namespace Durak.Core.Interfaces;
+
+public interface IFieldValidator
 {
-	public interface IFieldValidator
-	{
-		bool IsFieldEmpty(Field field);
-		bool IsPlayerClearedTable(Field field,Player enemyPlayer,Player currentPlayer);
-		bool CanPlaceAnotherCard(Field field,Player player,Card cardToAdd);
-	}
+	bool IsFieldEmpty(Field field);
+	bool IsPlayerClearedTable(Field field,Player enemyPlayer,Player currentPlayer);
+	bool CanPlaceAnotherCard(Field field,Player player,Card cardToAdd);
 }

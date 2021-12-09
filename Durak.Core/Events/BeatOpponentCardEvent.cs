@@ -1,18 +1,17 @@
-using Durak.Core.Game;
+using Durak.Core.GameModels.Cards;
 using MediatR;
 
-namespace Durak.Core.Events
+namespace Durak.Core.Events;
+
+public class BeatOpponentCardEvent : BaseEvent
 {
-	public class BeatOpponentCardEvent : BaseEvent
+	private Card _sourceCard;
+	private Card _targerCard;
+
+
+	public BeatOpponentCardEvent(Card surceCard, Card targerCard)
 	{
-		private Card _sourceCard;
-		private Card _targerCard;
-
-
-		public BeatOpponentCardEvent(Card surceCard, Card targerCard)
-		{
-			_sourceCard = surceCard;
-			_targerCard = targerCard;
-		}
+		_sourceCard = surceCard;
+		_targerCard = targerCard;
 	}
 }

@@ -1,7 +1,9 @@
 using Durak.Core.Events;
-using Durak.Core.Game;
+using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.Fields;
+using Durak.Core.GameModels.Players;
+using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace Durak.Client.Services;
 
@@ -28,7 +30,7 @@ namespace Durak.Client.Services;
 			if (_fieldValidator.IsFieldEmpty(game.Field) ||
 			    (_fieldValidator.CanPlaceAnotherCard(game.Field,player,card)))
 			{
-				var playedCard = new PlacedCard(game.Id,card.Id, player.Id);
+				var playedCard = new PlacedCard(game.Id, card.Id, player.Id);
 				game.Field.PlayCard(playedCard);
 
 			}

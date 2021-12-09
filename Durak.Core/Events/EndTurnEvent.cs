@@ -1,7 +1,6 @@
-namespace Durak.Core.Events
-{
-	public class EndTurnEvent : BaseEvent
-	{
+namespace Durak.Core.Events;
 
-	}
+public class EndTurnEvent : BaseEvent
+{
+
 }

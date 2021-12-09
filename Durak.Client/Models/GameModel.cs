@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Durak.Client.Models
+namespace Durak.Client.Models;
+
+public class GameModel
 {
-	public class GameModel
-	{
-		[Required(ErrorMessage = "First name is required")]
-		public string Name;
-	}
+	[Required(ErrorMessage = "First name is required")]
+	public string Name;
 }

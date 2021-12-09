@@ -1,7 +1,6 @@
-namespace Durak.Core.Interfaces
-{
-	public interface IRootEntity
-	{
+namespace Durak.Core.Interfaces;
 
-	}
+public interface IRootEntity
+{
+
 }

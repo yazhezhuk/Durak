@@ -1,22 +1,27 @@
-using System.Collections.Generic;
-using System.Linq;
 using Durak.Core.Events;
-using Durak.Core.Game;
+using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.CardSets;
+using Durak.Core.GameModels.Players;
+using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
 
-namespace Durak.Core.Game.Fields;
+namespace Durak.Core.GameModels.Fields;
 
 public class Field : BaseEntity<int>, IRootEntity
 {
+	public int GameId { get; set; }
 	public int DeckId { get; set; }
+
+	public Field(int deckId)
+	{
+		DeckId = deckId;
+	}
+
 	public Deck Deck { get; set; }
-
-	public Game Game;
-
-	public List<PlacedCard> PlayedCards { get; set; }
+	public virtual List<PlacedCard> PlayedCards { get; set; }
 
 
-	public List<Card> GetCardsPlayedByPlayer(Player player)
+	public List<Card> ListCardsByPlayer(Player player)
 	{
 		return PlayedCards
 			.Where(playerCard => playerCard.PlayerId != player.Id)

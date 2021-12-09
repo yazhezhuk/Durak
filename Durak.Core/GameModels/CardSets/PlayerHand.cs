@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Durak.Core.Events;
+using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.Shared;
 
-namespace Durak.Core.Game
+namespace Durak.Core.GameModels.CardSets;
+
+public class PlayerHand : BaseEntity<int>
 {
-	public class PlayerHand : BaseEntity<int>
-	{
 		public int PlayerId { get; set; }
 
 		protected HashSet<Card> _cards;
@@ -33,8 +32,7 @@ namespace Durak.Core.Game
 			_cards.Remove(card);
 			Events.Add(new CardDrawnFromHandEvent());
 
-			return new PlacedCard(playedCard.CardId, playedCard.PlayerId);
+			return playedCard;
 		}
 
-	}
 }

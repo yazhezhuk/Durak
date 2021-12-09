@@ -1,7 +1,6 @@
-namespace Durak.Core.Events
-{
-	public class CardDrawnFromHandEvent : BaseEvent
-	{
+namespace Durak.Core.Events;
 
-	}
+public class CardDrawnFromHandEvent : BaseEvent
+{
+
 }
