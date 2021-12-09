@@ -5,7 +5,7 @@ using Durak.Core.GameModels.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core.Infrastructure.Data;
+namespace Durak.Infrastructure.Data;
 
 public class GameContext : DbContext
 {

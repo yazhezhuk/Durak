@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Text;
-using Core.Infrastructure;
-using Core.Infrastructure.Data;
-using Core.Infrastructure.Integration;
+using Durak.Infrastructure;
+using Durak.Infrastructure.Data;
+using Durak.Infrastructure.Integration;
 using Durak.Core.Events;
 using Durak.Core.GameModels.Players;
 using MediatR;

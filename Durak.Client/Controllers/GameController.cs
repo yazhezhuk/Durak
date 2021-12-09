@@ -1,5 +1,5 @@
-using Core.Infrastructure;
-using Core.Infrastructure.Integration;
+using Durak.Infrastructure;
+using Durak.Infrastructure.Integration;
 using Durak.Core.GameModels;
 using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;

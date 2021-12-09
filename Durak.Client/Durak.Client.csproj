@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Core.Infrastructure\Core.Infrastructure.csproj" />
+      <ProjectReference Include="..\Durak.Infrastructure\Durak.Infrastructure.csproj" />
       <ProjectReference Include="..\Durak.Core\Durak.Core.csproj" />
     </ItemGroup>
 

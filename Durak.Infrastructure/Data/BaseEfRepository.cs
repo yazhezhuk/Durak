@@ -5,7 +5,7 @@ using Durak.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core.Infrastructure.Data;
+namespace Durak.Infrastructure.Data;
 
 public class BaseEfRepository<T> : IRepository<T> where T : class,IRootEntity
 {
