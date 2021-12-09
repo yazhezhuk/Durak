@@ -1,0 +1,26 @@
+.gameList {
+    width: 100%;
+    max-width: 500px;
+    height: 250px;
+    background: green;
+    border: 10px solid #78401b;
+}
+
+.h3 {
+    font-size: 21px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.playerList {
+    width: 300px;
+    height: 150px;
+    margin: 0 15px;
+}
+
+.startGame {
+    height: 50px;
+    font-size: 20px;
+    text-align: center;
+    margin-left: 15px;
+}
