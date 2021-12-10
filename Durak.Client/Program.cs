@@ -49,8 +49,10 @@ builder.Logging.AddConsole();
 
 // For Entity Framework
 builder.Services.AddDbContext<GameContext>(options =>
-	options.UseSqlServer(connectionString:"Server=DESKTOP-E9ICKFV\\SQLEXPRESS;Initial Catalog = GameDb;User Id=chel;Password=bruh3228;"));
-builder.Services.AddIdentity<User, IdentityRole>()
+	options.UseSqlServer(connectionString:"Server=DESKTOP-E9ICKFV\\SQLEXPRESS;Initial Catalog = GameDb;User Id=chel;Password=bruh3228;"
+	),ServiceLifetime.Singleton);
+
+builder.Services.AddIdentity<AppUser, IdentityRole>()
 	.AddEntityFrameworkStores<GameContext>()
 	.AddDefaultTokenProviders();
 
@@ -59,14 +61,14 @@ builder.Services.AddMediatR(Assembly.GetAssembly(typeof(BaseEvent)));
 
 
 //Data
-builder.Services.AddScoped<IRepository<GameSession>,BaseEfRepository<GameSession>>();
-builder.Services.AddScoped<IRepository<GameCard>, BaseEfRepository<GameCard>>();
-builder.Services.AddScoped<IRepository<Player>,     BaseEfRepository<Player>>();
-builder.Services.AddScoped<IRepository<Field>,      BaseEfRepository<Field>>();
-builder.Services.AddScoped<IRepository<Game>,       BaseEfRepository<Game>>();
-builder.Services.AddScoped<IRepository<PlayerHand>,       BaseEfRepository<PlayerHand>>();
-builder.Services.AddScoped<IGameSessionService,     GameSessionService>();
-builder.Services.AddScoped<IRepository<Deck>,         BaseEfRepository<Deck>>();
+builder.Services.AddScoped<IRepository<PlayerHand>,BaseEfRepository<PlayerHand>>();
+builder.Services.AddScoped<IGameSessionRepository, GameSessionRepository>();
+builder.Services.AddScoped<IRepository<GameCard>,  BaseEfRepository<GameCard>>();
+builder.Services.AddScoped<IRepository<Player>,    BaseEfRepository<Player>>();
+builder.Services.AddScoped<IGameSessionService,    GameSessionService>();
+builder.Services.AddScoped<IRepository<Field>,     BaseEfRepository<Field>>();
+builder.Services.AddScoped<IRepository<Game>,      BaseEfRepository<Game>>();
+builder.Services.AddScoped<IRepository<Deck>,      BaseEfRepository<Deck>>();
 
 
 

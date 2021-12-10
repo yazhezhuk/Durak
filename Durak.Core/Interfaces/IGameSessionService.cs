@@ -8,5 +8,5 @@ namespace Durak.Core.Interfaces;
 public interface IGameSessionService
 {
 	Game CreateEmptyGame(string name);
-	void PlayerRequestConnection(User user, int gameSessionId);
+	bool PlayerRequestConnection(AppUser appUser, GameSession gameSessionId);
 }

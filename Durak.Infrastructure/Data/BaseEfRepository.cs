@@ -19,6 +19,14 @@ public class BaseEfRepository<T> : IRepository<T> where T : class,IRootEntity
 	public virtual T? Get(int id) =>
 		_dataContext.Set<T>().Find(id);
 
+	public T? Get(Predicate<T> filter)
+	{
+		var entry =
+			_dataContext.Set<T>().Find(filter);
+
+		return entry;
+	}
+
 	public virtual int Delete(int id)
 	{
 		var entry =

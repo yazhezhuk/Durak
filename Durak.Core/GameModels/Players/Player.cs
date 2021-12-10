@@ -9,17 +9,18 @@ namespace Durak.Core.GameModels.Players;
 public class Player : BaseEntity<int>, IRootEntity
 {
 	public CurrentRole CurrentRole { get; set; }
-	public string UserId { get; set; }
+	public string AppUserId { get; set; }
+	public AppUser AppUser { get; set; }
 	public int GameId { get; set; }
 	public Game Game { get; set; }
 
-	public Player(int gameId, string userId)
+	public Player(int gameId, string appUserId)
 	{
-		UserId = userId;
+		AppUserId = appUserId;
 		GameId = gameId;
 	}
 
-	public PlayerHand PlayerHand { get; }
+	public PlayerHand PlayerHand { get; set; }
 
 	public void TakeEnoughCards(Deck deck)
 	{

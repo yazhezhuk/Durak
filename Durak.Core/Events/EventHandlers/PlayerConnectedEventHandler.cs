@@ -31,17 +31,19 @@ public class PlayerConnectedEventHandler : INotificationHandler<PlayerConnectedE
 	{
 		var player = new Player(
 			notification.TargetedSession.Game.Id,
-			notification.User.Id);
+			notification.AppUser.Id);
 		_playerRepository.Add(player);
 
 		var playerHand = new PlayerHand(player.Id);
 		_playerHandRepository.Add(playerHand);
+		_playerRepository.Update(player);
+
+		player.TakeEnoughCards(notification.TargetedSession.Game.Deck);
+		_playerRepository.Update(player);
 
 		if (notification.TargetedSession.FirstPlayerConnected &&
 		    notification.TargetedSession.SecondPlayerConnected)
 			_mediator.Publish(new StartGameEvent(playerHand));
-
-		player.TakeEnoughCards(notification.TargetedSession.Game.Deck);
 
 		return Task.CompletedTask;
 	}

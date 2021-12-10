@@ -1,3 +1,4 @@
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using Durak.Core;
 using Durak.Core.GameModels.Cards;
@@ -10,6 +11,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Durak.Infrastructure.Data;
 
@@ -21,6 +23,7 @@ public class GameContext : IdentityDbContext
 	:base(options)
 	{
 		_mediator = mediator;
+
 		Database.EnsureDeleted();
 		Database.EnsureCreated();
 	}
@@ -31,6 +34,9 @@ public class GameContext : IdentityDbContext
 	public DbSet<Field> Fields             { get; set; }
 	public DbSet<Deck> Decks               { get; set; }
 	public DbSet<Game> Games               { get; set; }
+	public DbSet<AppUser> AppUsers         { get; set; }
+
+
 
 
 
@@ -67,20 +73,29 @@ public class GameContext : IdentityDbContext
 
 		//	modelBuilder.Entity<Card>().HasData(Helper.Game.InitialCardSet);
 
-		modelBuilder.Entity<User>().Metadata.SetTableName("Users");
-
-		var appUser = new User {
-			Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+		modelBuilder.Entity<AppUser>().Metadata.SetTableName("AppUsers");
+		var appUser = new AppUser {
+			Id = Guid.NewGuid().ToString(),
 			Email = "zhukovets@gmail.com",
 			EmailConfirmed = true,
 			UserName = "vitalich",
 			NormalizedUserName = "VITALICH"
 		};
 
-		var ph = new PasswordHasher<User>();
+		var appUser1 = new AppUser {
+			Id = Guid.NewGuid().ToString(),
+			Email = "nazarius@gmail.com",
+			EmailConfirmed = true,
+			UserName = "nazarix",
+			NormalizedUserName = "NAZARIX"
+		};
+
+		var ph = new PasswordHasher<AppUser>();
 		appUser.PasswordHash = ph.HashPassword(appUser, "bruh");
 
-		modelBuilder.Entity<User>().HasData(appUser);
+		appUser1.PasswordHash = ph.HashPassword(appUser, "p");
+
+		modelBuilder.Entity<AppUser>().HasData(appUser,appUser1);
 
 	}
 

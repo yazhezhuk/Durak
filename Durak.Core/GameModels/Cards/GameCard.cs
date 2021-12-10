@@ -6,13 +6,13 @@ namespace Durak.Core.GameModels.Cards;
 public class GameCard : BaseEntity<int>, IRootEntity
 {
 	public Card Card { get; set; }
-	public int? ConnectedPlayerId { get; set; }
+	public int? PlayerId { get; set; }
 	public int GameId { get; set; }
 
-	public GameCard(int gameId,Card card, int connectedPlayerId)
+	public GameCard(int gameId,Card card, int playerId)
 	{
 		Card = card;
-		ConnectedPlayerId = connectedPlayerId;
+		PlayerId = playerId;
 		GameId = gameId;
 	}
 	public GameCard(int gameId,Card card)

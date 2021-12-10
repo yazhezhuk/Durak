@@ -6,12 +6,12 @@ namespace Durak.Core.Events.ApplicationEvents;
 
 public class PlayerConnectedEvent : INotification
 {
-	public User User;
+	public AppUser AppUser;
 	public GameSession TargetedSession;
 
-	public PlayerConnectedEvent(GameSession connectionTarget,User user)
+	public PlayerConnectedEvent(GameSession connectionTarget,AppUser appUser)
 	{
 		TargetedSession = connectionTarget;
-		User = user;
+		AppUser = appUser;
 	}
 }

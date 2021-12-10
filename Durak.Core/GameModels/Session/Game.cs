@@ -30,10 +30,10 @@ public class Game : BaseEntity<int>, IRootEntity
 
 	public GameState GameState { get; set; }
 
-	public Player AttackPlayer => Players.First(
+	public Player? AttackPlayer => Players.FirstOrDefault(
 		p => p.CurrentRole == CurrentRole.Attacker);
 
-	public Player DefencePlayer => Players.First(
+	public Player? DefencePlayer => Players.FirstOrDefault(
 		p => p.CurrentRole == CurrentRole.Defender);
 
 	public void RollTrumpLear()

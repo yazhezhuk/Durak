@@ -6,6 +6,7 @@ public interface IRepository<T>
 {
 	List<T> GetAll();
 	T? Get(int id);
+	T? Get(Predicate<T> filter);
 
 	int Delete(int id);
 	int Delete(T entity);

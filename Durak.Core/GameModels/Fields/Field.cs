@@ -22,7 +22,7 @@ public class Field : BaseEntity<int>, IRootEntity
 	public List<Card> ListCardsByPlayer(Player player)
 	{
 		//return PlayedCards
-		//	.Where(playerCard => playerCard.PlayerId != user.Id)
+		//	.Where(playerCard => playerCard.PlayerId != appUser.Id)
 	//		.Select(playedCard => playedCard.Card)
 	//		.ToList();
 	return null;
@@ -44,7 +44,6 @@ public class Field : BaseEntity<int>, IRootEntity
 
 	public void PlayCard(GameCard card)
 	{
-
 		PlayedCards.Add(card);
 		Events.Add(new PlaceCardEvent());
 	}

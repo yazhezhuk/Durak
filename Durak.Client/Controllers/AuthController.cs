@@ -18,12 +18,12 @@ namespace Durak.Client.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-	private readonly UserManager<User> _userManager;
+	private readonly UserManager<AppUser> _userManager;
 	private readonly RoleManager<IdentityRole> _roleManager;
 	private IConfiguration _configuration;
 
 
-	public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+	public AuthController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
 	{
 		_roleManager = roleManager;
 		_userManager = userManager;
@@ -39,22 +39,30 @@ public class AuthController : ControllerBase
 		if (!passwordCheckResult)
 			return Unauthorized();
 
+
+
 		return Ok(new
 		{
 			token = GenerateJwtToken(existingUserModel)
 		});
 	}
 
-	private string GenerateJwtToken(User user)
+	private string GenerateJwtToken(AppUser appUser)
 	{
 		// generate token that is valid for 7 days
 		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Helper.ApplicationOptions.DEFAULT_SECRET));
 
 		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+		var claims = new[]
+		{
+			new Claim(JwtRegisteredClaimNames.Sub, appUser.UserName)
+		};
+
+
 		var token = new JwtSecurityToken(Helper.ApplicationOptions.DEFAULT_HOST,
 			Helper.ApplicationOptions.DEFAULT_HOST,
-			null,
+			claims,
 			expires: DateTime.Now.AddMinutes(120),
 			signingCredentials: credentials);
 

@@ -1,29 +1,34 @@
+using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Fields;
 using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Durak.Core.Services;
 
 public class GameSessionService : IGameSessionService
 {
-	private readonly IRepository<GameSession> _gameSessionsRepository;
+	private readonly IGameSessionRepository _gameSessionsRepository;
 	private readonly IRepository<Deck> _deckRepository;
 	private readonly IRepository<Field> _fieldRepository;
 	private readonly IRepository<Game> _gameRepository;
 	private readonly IRepository<GameCard> _gameCardRepository;
+	private readonly IMediator _mediator;
 
 	public GameSessionService(
+		IMediator mediator,
 		IRepository<GameCard> gameCardRepository,
-		IRepository<GameSession> gameSessionsRepository,
+		IGameSessionRepository gameSessionsRepository,
 		IRepository<Field> fieldRepository,
 		IRepository<Game> gameRepository,
 		IRepository<Deck> deckRepository
 	)
 	{
+		_mediator = mediator;
 		_gameSessionsRepository = gameSessionsRepository;
 		_gameCardRepository = gameCardRepository;
 		_fieldRepository = fieldRepository;
@@ -53,27 +58,27 @@ public class GameSessionService : IGameSessionService
 	}
 
 
-
-	public void PlayerRequestConnection(User user, int gameSessionId)
+	public bool PlayerRequestConnection(AppUser appUser, GameSession gameSession)
 	{
-		var existingGameSession = _gameSessionsRepository.Get(gameSessionId);
-		if (existingGameSession == null)
+		if (gameSession == null)
 			throw new InvalidOperationException("Game does not exist.");
 
-		var existingGame = _gameRepository.Get(existingGameSession.Game.Id);
+		var existingGame = _gameRepository.Get(gameSession.Game.Id);
 		if (existingGame == null || existingGame.GameState == GameState.Ended)
 			throw new InvalidOperationException("Something went wrong.Game session exists but game info is not");
 
-		switch (existingGameSession.FirstPlayerConnected)
+		switch (gameSession.FirstPlayerConnected)
 		{
-			case true when existingGameSession.SecondPlayerConnected:
+			case true when gameSession.SecondPlayerConnected:
 				throw new InvalidOperationException("This session already full");
 			case false:
-				existingGameSession.FirstUserId = user.Id;
-				break;
+				gameSession.FirstUserId = appUser.Id;
+				_mediator.Publish(new PlayerConnectedEvent(gameSession, appUser));
+				return true;
 			case true:
-				existingGameSession.SecondUserId = user.Id;
-				break;
+				gameSession.SecondUserId = appUser.Id;
+				_mediator.Publish(new PlayerConnectedEvent(gameSession, appUser));
+				return true;
 		}
 	}
 }
