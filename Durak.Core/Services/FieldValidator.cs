@@ -8,16 +8,16 @@ namespace Durak.Core.Services;
 public class FieldValidator : IFieldValidator
 {
 
-	public bool CanPlaceAnotherCard(Field field,Player player,Card cardToAdd)
+	public bool CanPlaceAnotherCard(Field field,Player user,Card cardToAdd)
 	{
 		return IsFieldEmpty(field) ||
-		       !IsCardsLimitReached(field, player) &&
+		       !IsCardsLimitReached(field, user) &&
 		       IsCardWithSameRankPlaced(field, cardToAdd);
 	}
 
-	private bool IsCardsLimitReached(Field field, Player player)
+	private bool IsCardsLimitReached(Field field, Player user)
 	{
-		return field.ListCardsByPlayer(player).Count > 5;
+		return field.ListCardsByPlayer(user).Count > 5;
 	}
 
 	public bool IsFieldEmpty(Field field)
@@ -25,10 +25,10 @@ public class FieldValidator : IFieldValidator
 		return field.PlayedCards.Count == 0;
 	}
 
-	public bool IsPlayerClearedTable(Field field,Player enemyPlayer,Player currentPlayer)
+	public bool IsPlayerClearedTable(Field field,Player enemyUser,Player currentUser)
 	{
-		return field.ListCardsByPlayer(enemyPlayer).Count ==
-		       field.ListCardsByPlayer(currentPlayer).Count;
+		return field.ListCardsByPlayer(enemyUser).Count ==
+		       field.ListCardsByPlayer(currentUser).Count;
 	}
 
 	public bool IsCardWithSameRankPlaced(Field field,Card cardToCheck)

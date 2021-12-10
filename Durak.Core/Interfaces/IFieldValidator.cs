@@ -7,6 +7,6 @@ namespace Durak.Core.Interfaces;
 public interface IFieldValidator
 {
 	bool IsFieldEmpty(Field field);
-	bool IsPlayerClearedTable(Field field,Player enemyPlayer,Player currentPlayer);
-	bool CanPlaceAnotherCard(Field field,Player player,Card cardToAdd);
+	bool IsPlayerClearedTable(Field field,Player enemyUser,Player currentUser);
+	bool CanPlaceAnotherCard(Field field,Player user,Card cardToAdd);
 }

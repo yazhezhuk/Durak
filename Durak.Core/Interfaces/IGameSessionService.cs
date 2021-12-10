@@ -7,7 +7,6 @@ namespace Durak.Core.Interfaces;
 
 public interface IGameSessionService
 {
-	Game CreateEmptyGame();
-	void PlayerRequestConnection(Game game, Player player);
-	void StartGame(GameSession gameSession);
+	Game CreateEmptyGame(string name);
+	void PlayerRequestConnection(User user, int gameSessionId);
 }

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace Durak.Infrastructure.Integration;
+namespace Durak.Core.Services;
 
 public class GameHub : Hub
 {

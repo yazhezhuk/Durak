@@ -22,4 +22,8 @@
       <ProjectReference Include="..\Durak.Core\Durak.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Integration" />
+    </ItemGroup>
+
 </Project>

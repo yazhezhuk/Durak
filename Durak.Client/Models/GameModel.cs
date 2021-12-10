@@ -4,6 +4,6 @@ namespace Durak.Client.Models;
 
 public class GameModel
 {
-	[Required(ErrorMessage = "First name is required")]
-	public string Name;
+	[Required(ErrorMessage = "Game name is required")]
+	public string Name { get; set; }
 }

@@ -9,9 +9,9 @@ namespace Durak.Infrastructure.Data;
 
 public class BaseEfRepository<T> : IRepository<T> where T : class,IRootEntity
 {
-	protected readonly DbContext _dataContext;
+	protected readonly GameContext _dataContext;
 
-	public BaseEfRepository(DbContext dataContext) => _dataContext = dataContext;
+	public BaseEfRepository(GameContext dataContext) => _dataContext = dataContext;
 
 	public virtual List<T> GetAll() =>
 		_dataContext.Set<T>().ToList();

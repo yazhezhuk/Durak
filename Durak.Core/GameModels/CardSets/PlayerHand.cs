@@ -1,38 +1,50 @@
 using Durak.Core.Events;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Shared;
+using Durak.Core.Interfaces;
+using Newtonsoft.Json;
 
 namespace Durak.Core.GameModels.CardSets;
 
-public class PlayerHand : BaseEntity<int>
+public class PlayerHand : BaseEntity<int>,IRootEntity
 {
-		public int PlayerId { get; set; }
+	public HashSet<GameCard> Cards { get; set; }
 
-		protected HashSet<Card> _cards;
+	public int PlayerId { get; set; }
 
+	public PlayerHand(int playerId)
+	{
+		PlayerId = playerId;
+		Cards = new HashSet<GameCard>();
+	}
 
-		public void AddCard(PlacedCard playedCard)
-		{
-			var card = playedCard.Card;
-			if (_cards.Contains(card))
-				throw new AggregateException("Card already exists!");
+	public int CardsInHandCount => Cards.Count;
 
-			_cards.Add(card);
+	public void AddCard(GameCard card)
+	{
+		if (Cards.Contains(card))
+			throw new AggregateException("Card already exists!");
 
-			Events.Add(new CardDrawnToHandEvent());
-		}
+		Cards.Add(card);
 
-		public PlacedCard DrawCard(PlacedCard playedCard)
-		{
-			var card = playedCard.Card;
+		Events.Add(new CardDrawnToHandEvent());
+	}
 
-			if (!_cards.Contains(card))
-				throw new AggregateException("This card cannot be drawn");
+	public string ToJson()
+	{
+		return JsonConvert.SerializeObject(Cards);
+	}
 
-			_cards.Remove(card);
-			Events.Add(new CardDrawnFromHandEvent());
+	public GameCard DrawCard(GameCard playedCard)
+	{
 
-			return playedCard;
-		}
+		if (!Cards.Contains(playedCard))
+			throw new AggregateException("This card cannot be drawn");
+
+		Cards.Remove(playedCard);
+		Events.Add(new CardDrawnFromHandEvent());
+
+		return playedCard;
+	}
 
 }

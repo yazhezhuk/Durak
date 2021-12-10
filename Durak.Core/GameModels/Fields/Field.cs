@@ -1,4 +1,5 @@
 using Durak.Core.Events;
+using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Players;
@@ -10,23 +11,21 @@ namespace Durak.Core.GameModels.Fields;
 public class Field : BaseEntity<int>, IRootEntity
 {
 	public int GameId { get; set; }
-	public int DeckId { get; set; }
 
-	public Field(int deckId)
+	public Field(int gameId)
 	{
-		DeckId = deckId;
+		GameId = gameId;
 	}
 
-	public Deck Deck { get; set; }
-	public virtual List<PlacedCard> PlayedCards { get; set; }
-
+	public List<GameCard> PlayedCards { get; set; } = new List<GameCard>();
 
 	public List<Card> ListCardsByPlayer(Player player)
 	{
-		return PlayedCards
-			.Where(playerCard => playerCard.PlayerId != player.Id)
-			.Select(playedCard => playedCard.Card)
-			.ToList();
+		//return PlayedCards
+		//	.Where(playerCard => playerCard.PlayerId != user.Id)
+	//		.Select(playedCard => playedCard.Card)
+	//		.ToList();
+	return null;
 	}
 
 	public void RemoveAllCards()
@@ -37,13 +36,13 @@ public class Field : BaseEntity<int>, IRootEntity
 		}
 	}
 
-	public void RemoveCard(PlacedCard card)
+	public void RemoveCard(GameCard card)
 	{
 		PlayedCards.Remove(card);
 		Events.Add(new RemoveCardEvent());
 	}
 
-	public void PlayCard(PlacedCard card)
+	public void PlayCard(GameCard card)
 	{
 
 		PlayedCards.Add(card);

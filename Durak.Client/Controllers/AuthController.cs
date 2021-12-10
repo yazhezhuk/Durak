@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Durak.Client.Models;
+using Durak.Core;
 using Durak.Core.GameModels.Players;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,12 +18,12 @@ namespace Durak.Client.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-	private readonly UserManager<Player> _userManager;
+	private readonly UserManager<User> _userManager;
 	private readonly RoleManager<IdentityRole> _roleManager;
 	private IConfiguration _configuration;
 
 
-	public AuthController(UserManager<Player> userManager, RoleManager<IdentityRole> roleManager)
+	public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
 	{
 		_roleManager = roleManager;
 		_userManager = userManager;
@@ -44,15 +45,15 @@ public class AuthController : ControllerBase
 		});
 	}
 
-	private string GenerateJwtToken(Player player)
+	private string GenerateJwtToken(User user)
 	{
 		// generate token that is valid for 7 days
-		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("somesecretkey32228!"));
+		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Helper.ApplicationOptions.DEFAULT_SECRET));
 
 		var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-		var token = new JwtSecurityToken("http://localhost:3000/",
-			"http://localhost:3000/",
+		var token = new JwtSecurityToken(Helper.ApplicationOptions.DEFAULT_HOST,
+			Helper.ApplicationOptions.DEFAULT_HOST,
 			null,
 			expires: DateTime.Now.AddMinutes(120),
 			signingCredentials: credentials);

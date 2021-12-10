@@ -1,3 +1,4 @@
+using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Fields;
 using Durak.Core.GameModels.Players;
@@ -13,35 +14,39 @@ public class GameSessionService : IGameSessionService
 	private readonly IRepository<Deck> _deckRepository;
 	private readonly IRepository<Field> _fieldRepository;
 	private readonly IRepository<Game> _gameRepository;
-	private readonly UserManager<Player> _userManager;
+	private readonly IRepository<GameCard> _gameCardRepository;
 
 	public GameSessionService(
+		IRepository<GameCard> gameCardRepository,
 		IRepository<GameSession> gameSessionsRepository,
 		IRepository<Field> fieldRepository,
 		IRepository<Game> gameRepository,
-		UserManager<Player> userManager,
 		IRepository<Deck> deckRepository
 	)
 	{
-		_userManager = userManager;
 		_gameSessionsRepository = gameSessionsRepository;
+		_gameCardRepository = gameCardRepository;
+		_fieldRepository = fieldRepository;
 		_gameRepository = gameRepository;
 		_deckRepository = deckRepository;
-		_fieldRepository = fieldRepository;
 	}
 
 	public Game CreateEmptyGame(string name)
 	{
-		var deck = new Deck();
+		var gameSession = new GameSession();
+		_gameSessionsRepository.Add(gameSession);
+
+		var game = new Game(name,gameSession.Id);
+		_gameRepository.Add(game);
+
+		var deck = new Deck(game.Id);
 		deck.Fill();
+
 		_deckRepository.Add(deck);
 
-		var field = new Field(deck.Id);
+		var field = new Field(game.Id);
 		_fieldRepository.Add(field);
 
-		var game = new Game(name,field.Id);
-		_gameRepository.Add(game);
-		game.FieldId = field.Id;
 		_gameRepository.Update(game);
 
 		return game;
@@ -49,16 +54,26 @@ public class GameSessionService : IGameSessionService
 
 
 
-	public void PlayerRequestConnection(Player player, int gameId)
+	public void PlayerRequestConnection(User user, int gameSessionId)
 	{
-		var possiblyExistingGame = _gameRepository.Get(gameId);
-		if (possiblyExistingGame == null ||
-		    possiblyExistingGame.GameState == GameState.Ended)
-			throw new InvalidOperationException("Cannot connect to game due to error.");
+		var existingGameSession = _gameSessionsRepository.Get(gameSessionId);
+		if (existingGameSession == null)
+			throw new InvalidOperationException("Game does not exist.");
 
+		var existingGame = _gameRepository.Get(existingGameSession.Game.Id);
+		if (existingGame == null || existingGame.GameState == GameState.Ended)
+			throw new InvalidOperationException("Something went wrong.Game session exists but game info is not");
 
+		switch (existingGameSession.FirstPlayerConnected)
+		{
+			case true when existingGameSession.SecondPlayerConnected:
+				throw new InvalidOperationException("This session already full");
+			case false:
+				existingGameSession.FirstUserId = user.Id;
+				break;
+			case true:
+				existingGameSession.SecondUserId = user.Id;
+				break;
+		}
 	}
-
-	public void StartGame(GameSession gameSession)
-	{ }
 }

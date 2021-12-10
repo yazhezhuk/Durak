@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Pages" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Durak.Infrastructure\Durak.Infrastructure.csproj" />
       <ProjectReference Include="..\Durak.Core\Durak.Core.csproj" />
     </ItemGroup>

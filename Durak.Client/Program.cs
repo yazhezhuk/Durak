@@ -1,10 +1,15 @@
 using System.Reflection;
 using System.Text;
-using Durak.Infrastructure;
+using Durak.Core;
 using Durak.Infrastructure.Data;
-using Durak.Infrastructure.Integration;
-using Durak.Core.Events;
+using Durak.Core.Events.IntegrationEvents;
+using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.CardSets;
+using Durak.Core.GameModels.Fields;
 using Durak.Core.GameModels.Players;
+using Durak.Core.GameModels.Session;
+using Durak.Core.Interfaces;
+using Durak.Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +26,7 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddRazorPages();
+
 //SignalR
 builder.Services.AddScoped<GameHub>();
 builder.Services.AddSignalR();
@@ -32,7 +38,7 @@ builder.Services.AddCors(options =>
 	{
 		policy.AllowAnyHeader()
 			.AllowAnyMethod()
-			.WithOrigins("http://localhost:3000")
+			.WithOrigins(Helper.ApplicationOptions.DEFAULT_HOST)
 			.AllowCredentials();
 	});
 });
@@ -44,14 +50,24 @@ builder.Logging.AddConsole();
 // For Entity Framework
 builder.Services.AddDbContext<GameContext>(options =>
 	options.UseSqlServer(connectionString:"Server=DESKTOP-E9ICKFV\\SQLEXPRESS;Initial Catalog = GameDb;User Id=chel;Password=bruh3228;"));
-builder.Services.AddDbContext<PlayersDbContext>(options =>
-	options.UseSqlServer("Server=DESKTOP-E9ICKFV\\SQLEXPRESS;Initial Catalog = UsersDb;User Id=chel;Password=bruh3228;"));
+builder.Services.AddIdentity<User, IdentityRole>()
+	.AddEntityFrameworkStores<GameContext>()
+	.AddDefaultTokenProviders();
+
+//application events
 builder.Services.AddMediatR(Assembly.GetAssembly(typeof(BaseEvent)));
 
-// For Identity
-builder.Services.AddIdentity<Player, IdentityRole>()
-	.AddEntityFrameworkStores<PlayersDbContext>()
-	.AddDefaultTokenProviders();
+
+//Data
+builder.Services.AddScoped<IRepository<GameSession>,BaseEfRepository<GameSession>>();
+builder.Services.AddScoped<IRepository<GameCard>, BaseEfRepository<GameCard>>();
+builder.Services.AddScoped<IRepository<Player>,     BaseEfRepository<Player>>();
+builder.Services.AddScoped<IRepository<Field>,      BaseEfRepository<Field>>();
+builder.Services.AddScoped<IRepository<Game>,       BaseEfRepository<Game>>();
+builder.Services.AddScoped<IRepository<PlayerHand>,       BaseEfRepository<PlayerHand>>();
+builder.Services.AddScoped<IGameSessionService,     GameSessionService>();
+builder.Services.AddScoped<IRepository<Deck>,         BaseEfRepository<Deck>>();
+
 
 
 // Adding Authentication
@@ -70,11 +86,13 @@ builder.Services.AddAuthentication(options =>
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidateLifetime = true,
-		ValidIssuer = "http://localhost:3000/",
-		ValidAudience = "http://localhost:3000/",
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("somesecretkey32228!"))
+		ValidIssuer = Helper.ApplicationOptions.DEFAULT_HOST,
+		ValidAudience = Helper.ApplicationOptions.DEFAULT_HOST,
+		IssuerSigningKey = new SymmetricSecurityKey(
+			Encoding.UTF8.GetBytes(Helper.ApplicationOptions.DEFAULT_SECRET))
 	};
 });
+
 builder.Services.AddAuthorization(options =>
 {
 	var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(

@@ -10,60 +10,42 @@ namespace Durak.Core.GameModels.Session;
 
 public class Game : BaseEntity<int>, IRootEntity
 {
+	public int GameSessionId { get; set; }
+
 	public string Name { get; set; }
 
-	public int FieldId { get; set; }
-
-	public Game(string name, int fieldId)
+	public Game(string name, int gameSessionId)
 	{
 		Name = name;
-		FieldId = fieldId;
+		GameSessionId = gameSessionId;
 		GameState = GameState.Created;
+		RollTrumpLear();
 	}
-
-	public virtual List<Move> Moves { get; set; }
-
-	public int AttackPlayerId { get; set; }
-	public ConnectedPlayer AttackPlayer { get; set; }
-
-	public int DefencePlayerId { get; set; }
-	public ConnectedPlayer DefencePlayer { get; set; }
-
-	public GameState GameState;
 
 	public Lear TrumpLear { get; set; }
+	public Field Field { get; set; }
+	public Deck Deck { get; set; }
 
-	public Move CurrentMove => Moves.Last();
+	public List<Player> Players { get; set; } = new List<Player>();
 
-	public void OnGameCreation()
-	{
-		var deck = GenerateDefaultDeck();
-	}
+	public GameState GameState { get; set; }
+
+	public Player AttackPlayer => Players.First(
+		p => p.CurrentRole == CurrentRole.Attacker);
+
+	public Player DefencePlayer => Players.First(
+		p => p.CurrentRole == CurrentRole.Defender);
 
 	public void RollTrumpLear()
 	{
-		if ((int)TrumpLear == 0)
-			throw new InvalidOperationException("Trump lear already decided");
-
 		//4 - lear count
 		var randomNum = Random.Shared.Next(1, 4);
 
 		TrumpLear = (Lear)randomNum;
 	}
 
-	private Field GenerateDefaultField(Deck deck)
+	public void ChangeSides()
 	{
-		var field = new Field();
-		field.Deck = deck;
-
-		return null;
-	}
-
-
-
-
-	private Deck GenerateDefaultDeck()
-	{
-
+		(AttackPlayer.CurrentRole, DefencePlayer.CurrentRole) = (DefencePlayer.CurrentRole, AttackPlayer.CurrentRole);
 	}
 }

@@ -1,3 +1,4 @@
+using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
 using MediatR;
 

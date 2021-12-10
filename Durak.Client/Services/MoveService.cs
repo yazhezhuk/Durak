@@ -19,18 +19,18 @@ namespace Durak.Client.Services;
 		private readonly IFieldValidator _fieldValidator;
 
 
-		public void PlaceCard(Game game, Card card, Player player)
+		public void PlaceCard(Game game, Card card, Player user)
 		{
-			if (player.Id != game.AttackPlayerId)
+			if (user.Id != game.AttackPlayer.Id)
 			{
 				game.Events.Add(new ErrorEvent());
 				return;
 			}
 
 			if (_fieldValidator.IsFieldEmpty(game.Field) ||
-			    (_fieldValidator.CanPlaceAnotherCard(game.Field,player,card)))
+			    (_fieldValidator.CanPlaceAnotherCard(game.Field,user,card)))
 			{
-				var playedCard = new PlacedCard(game.Id, card.Id, player.Id);
+				var playedCard = new GameCard(game.Id, card, user.Id);
 				game.Field.PlayCard(playedCard);
 
 			}

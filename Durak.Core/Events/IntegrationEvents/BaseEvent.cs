@@ -1,7 +1,6 @@
-using System;
 using MediatR;
 
-namespace Durak.Core.Events;
+namespace Durak.Core.Events.IntegrationEvents;
 
 public abstract class BaseEvent : INotification
 {

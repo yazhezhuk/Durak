@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Durak.Infrastructure.Data;
 
-public class PlayersDbContext : IdentityDbContext<Player>
+public class PlayersDbContext : IdentityDbContext<User>
 {
 
 	public PlayersDbContext(DbContextOptions<PlayersDbContext> options)
@@ -18,8 +18,8 @@ public class PlayersDbContext : IdentityDbContext<Player>
 	{
 		base.OnModelCreating(modelBuilder);
 
-		modelBuilder.Entity<Player>().Metadata.SetTableName("Players");
-		var appUser = new Player {
+		modelBuilder.Entity<User>().Metadata.SetTableName("Users");
+		var appUser = new User {
 			Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
 			Email = "zhukovets@gmail.com",
 			EmailConfirmed = true,
@@ -27,10 +27,10 @@ public class PlayersDbContext : IdentityDbContext<Player>
 			NormalizedUserName = "VITALICH"
 		};
 
-		var ph = new PasswordHasher<Player>();
+		var ph = new PasswordHasher<User>();
 		appUser.PasswordHash = ph.HashPassword(appUser, "bruh");
 
-		modelBuilder.Entity<Player>().HasData(appUser);
+		modelBuilder.Entity<User>().HasData(appUser);
 	}
 
 

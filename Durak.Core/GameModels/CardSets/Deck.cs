@@ -2,46 +2,53 @@ using Durak.Core.Events;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
+using Newtonsoft.Json;
 
 namespace Durak.Core.GameModels.CardSets;
 
 public class Deck : BaseEntity<int>, IRootEntity
 {
-	private HashSet<Card> _cards;
+	public int GameId { get; set; }
 
+	public Deck(int gameId)
+	{
+		GameId = gameId;
+	}
 
-	public void SetDeckCards(List<Card> cards)
+	public HashSet<GameCard> Cards { get; set; } = new HashSet<GameCard>();
+
+	public void SetDeckCards(List<GameCard> cards)
 	{
 		if (cards.Equals(null) || !cards.Any())
 			throw new ArgumentException("Cannot set deck cards", nameof(cards));
 
-		_cards = cards.ToHashSet();
+		Cards = cards.ToHashSet();
 	}
-	public void DrawCard(Card card)
+	public void DrawCard(GameCard card)
 	{
-		if (!_cards.Contains(card))
+		if (!Cards.Contains(card))
 			throw new ArgumentException("Card cannot be found!");
 
-		_cards.Remove(card);
+		Cards.Remove(card);
 		Events.Add(new CardDrawnToHandEvent());
 	}
 
 
-	public void AddCard(Card card)
+	public void AddCard(GameCard card)
 	{
-		if (_cards.Contains(card))
+		if (Cards.Contains(card))
 			throw new AggregateException("Card already exists!");
 
-		_cards.Add(card);
+		Cards.Add(card);
 	}
 
-	public Card DrawRandomCard()
+	public GameCard DrawRandomCard()
 	{
-		if (!_cards.Any())
+		if (!Cards.Any())
 			throw new InvalidOperationException("Deck is empty!");
 
-		var randomNum = Random.Shared.Next(1, _cards.Count);
-		var drawnCard = _cards.Skip(randomNum).First();
+		var randomNum = Random.Shared.Next(1, Cards.Count);
+		var drawnCard = Cards.Skip(randomNum).First();
 
 		DrawCard(drawnCard);
 
@@ -54,7 +61,7 @@ public class Deck : BaseEntity<int>, IRootEntity
 		{
 			foreach (var rank in Enum.GetValues(typeof(Rank)).Cast<Rank>())
 			{
-				var card = new Card(lear, rank);
+				var card = new GameCard(GameId,new Card(lear,rank));
 				AddCard(card);
 			}
 		}

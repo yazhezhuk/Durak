@@ -1,12 +1,17 @@
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Durak.Core.Events;
+using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Shared;
+using Durak.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Durak.Core.GameModels.Cards;
-
-public record Card(Lear Lear,Rank Rank) : ValueObject
+[Owned]
+public record Card(Lear Lear,Rank Rank) : IJsonSerializable, IRootEntity
 {
-
-	public BaseEvent BeatAnother(PlacedCard enemyCard, bool isEnemyCardPrime)
+	public BaseEvent BeatAnother(GameCard enemyCard, bool isEnemyCardPrime)
 	{
 		var isYourCardIsPrime = isEnemyCardPrime && Lear == enemyCard.Card.Lear;
 
@@ -15,5 +20,10 @@ public record Card(Lear Lear,Rank Rank) : ValueObject
 			return new BadCardEvent();
 
 		return new BeatOpponentCardEvent(this,enemyCard.Card);
+	}
+
+	public string ToJson()
+	{
+		return JsonConvert.SerializeObject(this);
 	}
 }
