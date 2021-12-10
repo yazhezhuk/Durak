@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Durak.Core", "Durak.Core\Du
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Durak.Client", "Durak.Client\Durak.Client.csproj", "{24EF936C-C5F2-49D8-ACB3-C10FA9154F08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Infrastructure", "Core.Infrastructure\Core.Infrastructure.csproj", "{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Durak.Infrastructure", "Durak.Infrastructure\Durak.Infrastructure.csproj", "{C80F046D-4623-40B3-AD44-6D1E5BB3FFF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
