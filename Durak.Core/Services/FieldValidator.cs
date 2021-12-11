@@ -1,6 +1,7 @@
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Fields;
 using Durak.Core.GameModels.Players;
+using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
 
 namespace Durak.Core.Services;
@@ -17,7 +18,7 @@ public class FieldValidator : IFieldValidator
 
 	private bool IsCardsLimitReached(Field field, Player user)
 	{
-		return field.ListCardsByPlayer(user).Count > 5;
+		return field.ListPlacedCards(user).Count > 5;
 	}
 
 	public bool IsFieldEmpty(Field field)
@@ -27,8 +28,8 @@ public class FieldValidator : IFieldValidator
 
 	public bool IsPlayerClearedTable(Field field,Player enemyUser,Player currentUser)
 	{
-		return field.ListCardsByPlayer(enemyUser).Count ==
-		       field.ListCardsByPlayer(currentUser).Count;
+		return field.ListPlacedCards(enemyUser).Count ==
+		       field.ListPlacedCards(currentUser).Count;
 	}
 
 	public bool IsCardWithSameRankPlaced(Field field,Card cardToCheck)
@@ -36,4 +37,7 @@ public class FieldValidator : IFieldValidator
 		return field.PlayedCards.Any(card =>
 			card.Card.Rank == cardToCheck.Rank);
 	}
+
+	public bool ValidateUserAttackerRight(AppUser user, Game game) =>
+		game.AttackPlayer.AppUser.UserName == user.UserName;
 }

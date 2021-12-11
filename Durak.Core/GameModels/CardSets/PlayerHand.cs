@@ -1,4 +1,5 @@
 using Durak.Core.Events;
+using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
@@ -27,7 +28,7 @@ public class PlayerHand : BaseEntity<int>,IRootEntity
 
 		Cards.Add(card);
 
-		Events.Add(new CardDrawnToHandEvent());
+		Events.Add(new CardDrawnToHandApplicationEvent());
 	}
 
 	public string ToJson()
@@ -42,7 +43,7 @@ public class PlayerHand : BaseEntity<int>,IRootEntity
 			throw new AggregateException("This card cannot be drawn");
 
 		Cards.Remove(playedCard);
-		Events.Add(new CardDrawnFromHandEvent());
+		Events.Add(new CardDrawnFromHandApplicationEvent());
 
 		return playedCard;
 	}

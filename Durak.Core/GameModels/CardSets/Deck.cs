@@ -1,4 +1,5 @@
 using Durak.Core.Events;
+using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
@@ -30,7 +31,7 @@ public class Deck : BaseEntity<int>, IRootEntity
 			throw new ArgumentException("Card cannot be found!");
 
 		Cards.Remove(card);
-		Events.Add(new CardDrawnToHandEvent());
+		Events.Add(new CardDrawnToHandApplicationEvent());
 	}
 
 

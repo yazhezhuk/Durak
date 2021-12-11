@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace Durak.Core.Services;
+namespace Durak.Infrastructure.Integration;
 
 public class GameHub : Hub
 {
 	private readonly ILogger _logger;
+
 	public GameHub(ILogger<GameHub> logger)
 	{
 		_logger = logger;
@@ -16,12 +17,5 @@ public class GameHub : Hub
 	{
 		_logger.LogInformation("Hub connection established.");
 		return base.OnConnectedAsync();
-	}
-
-
-	public async Task Send(string someShite)
-	{
-		_logger.LogInformation("Sending message");
-		await Clients.All.SendAsync("ReceiveMethod", someShite);
 	}
 }

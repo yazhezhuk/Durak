@@ -1,4 +1,5 @@
 using Durak.Core.Events;
+using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
@@ -19,14 +20,10 @@ public class Field : BaseEntity<int>, IRootEntity
 
 	public List<GameCard> PlayedCards { get; set; } = new List<GameCard>();
 
-	public List<Card> ListCardsByPlayer(Player player)
-	{
-		//return PlayedCards
-		//	.Where(playerCard => playerCard.PlayerId != appUser.Id)
-	//		.Select(playedCard => playedCard.Card)
-	//		.ToList();
-	return null;
-	}
+	public List<GameCard> ListPlacedCards(Player player) =>
+		PlayedCards
+			.Where(playerCard => playerCard.PlayerId != player.Id)
+			.ToList();
 
 	public void RemoveAllCards()
 	{
@@ -39,13 +36,13 @@ public class Field : BaseEntity<int>, IRootEntity
 	public void RemoveCard(GameCard card)
 	{
 		PlayedCards.Remove(card);
-		Events.Add(new RemoveCardEvent());
+		Events.Add(new RemoveCardApplicationEvent(card));
 	}
 
 	public void PlayCard(GameCard card)
 	{
 		PlayedCards.Add(card);
-		Events.Add(new PlaceCardEvent());
+		Events.Add(new PlaceCardApplicationEvent(card));
 	}
 
 }

@@ -3,15 +3,17 @@ using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Session;
 using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
+using Newtonsoft.Json;
 
 namespace Durak.Core.GameModels.Players;
 
 public class Player : BaseEntity<int>, IRootEntity
 {
-	public CurrentRole CurrentRole { get; set; }
+	public Role CurrentRole { get; set; }
 	public string AppUserId { get; set; }
 	public AppUser AppUser { get; set; }
 	public int GameId { get; set; }
+
 	public Game Game { get; set; }
 
 	public Player(int gameId, string appUserId)

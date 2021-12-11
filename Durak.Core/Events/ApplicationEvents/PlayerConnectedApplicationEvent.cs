@@ -4,12 +4,12 @@ using MediatR;
 
 namespace Durak.Core.Events.ApplicationEvents;
 
-public class PlayerConnectedEvent : INotification
+public class PlayerConnectedApplicationEvent : INotification
 {
 	public AppUser AppUser;
 	public GameSession TargetedSession;
 
-	public PlayerConnectedEvent(GameSession connectionTarget,AppUser appUser)
+	public PlayerConnectedApplicationEvent(GameSession connectionTarget,AppUser appUser)
 	{
 		TargetedSession = connectionTarget;
 		AppUser = appUser;

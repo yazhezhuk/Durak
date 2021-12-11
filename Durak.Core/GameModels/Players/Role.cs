@@ -1,6 +1,6 @@
 namespace Durak.Core.GameModels.Players;
 
-public enum CurrentRole
+public enum Role
 {
 	Attacker,
 	Defender

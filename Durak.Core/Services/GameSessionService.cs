@@ -46,7 +46,6 @@ public class GameSessionService : IGameSessionService
 
 		var deck = new Deck(game.Id);
 		deck.Fill();
-
 		_deckRepository.Add(deck);
 
 		var field = new Field(game.Id);
@@ -58,7 +57,7 @@ public class GameSessionService : IGameSessionService
 	}
 
 
-	public bool PlayerRequestConnection(AppUser appUser, GameSession gameSession)
+	public bool HandlePlayerConnection(AppUser appUser, GameSession gameSession)
 	{
 		if (gameSession == null)
 			throw new InvalidOperationException("Game does not exist.");
@@ -73,11 +72,11 @@ public class GameSessionService : IGameSessionService
 				throw new InvalidOperationException("This session already full");
 			case false:
 				gameSession.FirstUserId = appUser.Id;
-				_mediator.Publish(new PlayerConnectedEvent(gameSession, appUser));
+				_mediator.Publish(new PlayerConnectedApplicationEvent(gameSession, appUser));
 				return true;
 			case true:
 				gameSession.SecondUserId = appUser.Id;
-				_mediator.Publish(new PlayerConnectedEvent(gameSession, appUser));
+				_mediator.Publish(new PlayerConnectedApplicationEvent(gameSession, appUser));
 				return true;
 		}
 	}

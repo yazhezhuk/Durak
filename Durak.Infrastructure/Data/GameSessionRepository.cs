@@ -17,4 +17,14 @@ public class GameSessionRepository : BaseEfRepository<GameSession>,IGameSessionR
 			       .FirstOrDefault(session => session.Game.Name.Equals(gameName)) ??
 		       throw new InvalidOperationException("Game does not exist");
 	}
+
+	public GameSession GetByUserName(string userName)
+	{
+		return _dataContext.Set<GameSession>()
+			       .Include(session => session.Game)
+			       .FirstOrDefault(session =>
+				       session.Game.Players.Any(player =>
+					       player.AppUser.UserName == userName))
+		       ?? throw new InvalidOperationException("Game does not exist");
+	}
 }

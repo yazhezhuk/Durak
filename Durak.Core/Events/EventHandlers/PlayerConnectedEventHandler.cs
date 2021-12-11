@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Durak.Core.Events.EventHandlers;
 
-public class PlayerConnectedEventHandler : INotificationHandler<PlayerConnectedEvent>
+public class PlayerConnectedEventHandler : BaseEventHandler<PlayerConnectedApplicationEvent>
 {
 	private readonly IRepository<PlayerHand> _playerHandRepository;
 	private readonly IRepository<Player> _playerRepository;
@@ -16,10 +16,11 @@ public class PlayerConnectedEventHandler : INotificationHandler<PlayerConnectedE
 	private readonly IMediator _mediator;
 
 	public PlayerConnectedEventHandler(
+		IIntegrationEventPublisher eventPublisher,
 		IMediator mediator,
 		IRepository<PlayerHand> playerHandRep,
 		IRepository<Player> playerRep,
-		IRepository<Deck> deckRep)
+		IRepository<Deck> deckRep) : base(eventPublisher)
 	{
 		_mediator = mediator;
 		_deckRepository = deckRep;
@@ -27,11 +28,17 @@ public class PlayerConnectedEventHandler : INotificationHandler<PlayerConnectedE
 		_playerRepository = playerRep;
 	}
 
-	public Task Handle(PlayerConnectedEvent notification, CancellationToken cancellationToken)
+	public override Task Handle(PlayerConnectedApplicationEvent notification, CancellationToken cancellationToken)
 	{
 		var player = new Player(
 			notification.TargetedSession.Game.Id,
 			notification.AppUser.Id);
+
+		if (notification.TargetedSession.Game.AttackPlayer == null)
+			player.CurrentRole = Role.Attacker;
+		else
+			player.CurrentRole = Role.Defender;
+
 		_playerRepository.Add(player);
 
 		var playerHand = new PlayerHand(player.Id);
@@ -43,7 +50,7 @@ public class PlayerConnectedEventHandler : INotificationHandler<PlayerConnectedE
 
 		if (notification.TargetedSession.FirstPlayerConnected &&
 		    notification.TargetedSession.SecondPlayerConnected)
-			_mediator.Publish(new StartGameEvent(playerHand));
+			_mediator.Publish(new StartGameApplicationEvent(notification.TargetedSession.Game));
 
 		return Task.CompletedTask;
 	}

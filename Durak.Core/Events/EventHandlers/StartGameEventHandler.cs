@@ -1,22 +1,29 @@
-using Durak.Core.Events.IntegrationEvents;
+using Durak.Core.GameModels.Session;
+using Durak.Core.Interfaces;
 using Durak.Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Durak.Core.Events.EventHandlers;
 
-public class StartGameEventHandler : INotificationHandler<StartGameEvent>
+public class StartGameEventHandler : INotificationHandler<ApplicationEvents.StartGameApplicationEvent>
 {
-	private readonly GameHub _gameHub;
+	private readonly IIntegrationEventPublisher _publisher;
+	private readonly IRepository<Game> _gameRepository;
 
-	public StartGameEventHandler(GameHub gameHub)
+	public StartGameEventHandler(IRepository<Game> gameRepository, IIntegrationEventPublisher publisher)
 	{
-		_gameHub = gameHub;
+		_gameRepository = gameRepository;
+		_publisher = publisher;
 	}
 
 
-	public Task Handle(StartGameEvent notification, CancellationToken cancellationToken)
+	public Task Handle(ApplicationEvents.StartGameApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		return _gameHub.Clients.Others.SendAsync("StartGame", notification.Hand.ToJson());
+		notification.Game.GameState = GameState.Ongoing;
+		_gameRepository.Update(notification.Game);
+
+		return _publisher.PublishEvent(
+			new IntegrationEvents.StartGameIntegrationEvent(notification.Game));
 	}
 }

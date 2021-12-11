@@ -31,10 +31,10 @@ public class Game : BaseEntity<int>, IRootEntity
 	public GameState GameState { get; set; }
 
 	public Player? AttackPlayer => Players.FirstOrDefault(
-		p => p.CurrentRole == CurrentRole.Attacker);
+		p => p.Role == Role.Attacker);
 
 	public Player? DefencePlayer => Players.FirstOrDefault(
-		p => p.CurrentRole == CurrentRole.Defender);
+		p => p.Role == Role.Defender);
 
 	public void RollTrumpLear()
 	{
@@ -44,8 +44,13 @@ public class Game : BaseEntity<int>, IRootEntity
 		TrumpLear = (Lear)randomNum;
 	}
 
+	public bool ValidateUserHaveRightRole(AppUser appUser,Role _expected) =>
+		Players.FirstOrDefault(user => user.AppUser.UserName == appUser.UserName)
+			.Role == _expected;
+
+
 	public void ChangeSides()
 	{
-		(AttackPlayer.CurrentRole, DefencePlayer.CurrentRole) = (DefencePlayer.CurrentRole, AttackPlayer.CurrentRole);
+		(AttackPlayer.Role, DefencePlayer.Role) = (DefencePlayer.Role, AttackPlayer.Role);
 	}
 }

@@ -69,7 +69,6 @@ const GamePlace = () => {
 
   const pairCards = useMemo(() => {
     console.log(openedCards)
-    debugger
     return openedCards.reduce((acc, card) => {
       const len = acc.length - 1;
 

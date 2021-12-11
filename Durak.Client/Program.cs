@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text;
+using Durak.Client.Services;
 using Durak.Core;
+using Durak.Core.Events.ApplicationEvents;
 using Durak.Infrastructure.Data;
 using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
@@ -10,10 +12,12 @@ using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
 using Durak.Core.Services;
+using Durak.Infrastructure.Integration;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,11 +26,14 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddNewtonsoftJson(x =>
+		x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddRazorPages();
-
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddControllersWithViews();
 //SignalR
 builder.Services.AddScoped<GameHub>();
 builder.Services.AddSignalR();
@@ -57,18 +64,22 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 	.AddDefaultTokenProviders();
 
 //application events
-builder.Services.AddMediatR(Assembly.GetAssembly(typeof(BaseEvent)));
+builder.Services.AddMediatR(Assembly.GetAssembly(typeof(BaseApplicationEvent)));
 
 
 //Data
-builder.Services.AddScoped<IRepository<PlayerHand>,BaseEfRepository<PlayerHand>>();
+builder.Services.AddScoped<IRepository<PlayerHand>, BaseEfRepository<PlayerHand>>();
 builder.Services.AddScoped<IGameSessionRepository, GameSessionRepository>();
-builder.Services.AddScoped<IRepository<GameCard>,  BaseEfRepository<GameCard>>();
-builder.Services.AddScoped<IRepository<Player>,    BaseEfRepository<Player>>();
-builder.Services.AddScoped<IGameSessionService,    GameSessionService>();
-builder.Services.AddScoped<IRepository<Field>,     BaseEfRepository<Field>>();
-builder.Services.AddScoped<IRepository<Game>,      BaseEfRepository<Game>>();
-builder.Services.AddScoped<IRepository<Deck>,      BaseEfRepository<Deck>>();
+builder.Services.AddScoped<IRepository<GameCard>, BaseEfRepository<GameCard>>();
+builder.Services.AddScoped<IRepository<Player>, BaseEfRepository<Player>>();
+builder.Services.AddScoped<IRepository<Field>, BaseEfRepository<Field>>();
+builder.Services.AddScoped<IRepository<Game>, BaseEfRepository<Game>>();
+builder.Services.AddScoped<IRepository<Deck>,BaseEfRepository<Deck>>();
+
+builder.Services.AddScoped<IIntegrationEventPublisher, IntegrationEventPublisher>();
+builder.Services.AddScoped<IFieldValidator, FieldValidator>();
+builder.Services.AddScoped<IGameSessionService, GameSessionService>();
+builder.Services.AddScoped<IMoveService, MoveService>();
 
 
 

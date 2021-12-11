@@ -67,7 +67,7 @@ public class AuthController : ControllerBase
 		var token = new JwtSecurityToken(Helper.ApplicationOptions.DEFAULT_HOST,
 			Helper.ApplicationOptions.DEFAULT_HOST,
 			claims,
-			expires: DateTime.Now.AddMinutes(120),
+			expires: DateTime.Now.AddDays(120),
 			signingCredentials: credentials);
 
 

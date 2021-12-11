@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Durak.Client.Models;
+using Durak.Client.Services;
 using Durak.Infrastructure;
 using Durak.Core.GameModels;
 using Durak.Core.GameModels.Players;
@@ -20,7 +21,6 @@ namespace Durak.Client.Controllers;
 public class GameController : ControllerBase
 {
 	private readonly IRepository<Game> _gameRepository;
-	private readonly GameHub _gameHub;
 	private readonly IGameSessionService _gameSessionService;
 	private readonly UserManager<AppUser> _userManager;
 	private readonly IGameSessionRepository _gameSessionRepository;
@@ -28,11 +28,9 @@ public class GameController : ControllerBase
 	public GameController(
 		IRepository<Game> gameRepository,
 		IGameSessionRepository gameSessionRepository,
-		GameHub gameHub,
 		IGameSessionService gameSessionService, UserManager<AppUser> userManager)
 	{
 		_gameSessionRepository = gameSessionRepository;
-		_gameHub = gameHub;
 		_gameRepository = gameRepository;
 		_gameSessionService = gameSessionService;
 		_userManager = userManager;
@@ -53,7 +51,7 @@ public class GameController : ControllerBase
 
 		var gameSession = _gameSessionRepository.GetByGameName(gameModel.Name);
 
-		var result =  _gameSessionService.PlayerRequestConnection(appUser,gameSession);
+		var result =  _gameSessionService.HandlePlayerConnection(appUser,gameSession);
 
 
 		return Ok(new

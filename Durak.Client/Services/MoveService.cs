@@ -19,18 +19,21 @@ namespace Durak.Client.Services;
 		private readonly IFieldValidator _fieldValidator;
 
 
-		public void PlaceCard(Game game, Card card, Player user)
+		public void PlaceCard(Game game, Card card, Player player)
 		{
-			if (user.Id != game.AttackPlayer.Id)
+			if (game.GameState != GameState.Ongoing)
+				throw new InvalidOperationException("Cant place card in this game");
+
+			if (player.Id != game.AttackPlayer.Id)
 			{
-				game.Events.Add(new ErrorEvent());
+				game.Events.Add(new ErrorApplicationEvent());
 				return;
 			}
 
 			if (_fieldValidator.IsFieldEmpty(game.Field) ||
-			    (_fieldValidator.CanPlaceAnotherCard(game.Field,user,card)))
+			    (_fieldValidator.CanPlaceAnotherCard(game.Field,player,card)))
 			{
-				var playedCard = new GameCard(game.Id, card, user.Id);
+				var playedCard = new GameCard(game.Id, card, player.Id);
 				game.Field.PlayCard(playedCard);
 
 			}
@@ -41,8 +44,10 @@ namespace Durak.Client.Services;
 		public void TakeCards()
 		{ }
 
-		public void BeatCard()
-		{ }
+		public void DefendFromCard(Game game, Card playerCard, Card enemyCard, Player player)
+		{
+
+		}
 
 		public void EndTurn()
 		{ }
