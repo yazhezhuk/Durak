@@ -2,27 +2,29 @@
 const API_URL = "http://localhost:3000/api/auth/";
 
 
-const  login  =  (username, password) => {
-  
-    const response =  fetch(API_URL,{
-      method:'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept' : '*/*',
-        'Accept-Encoding' : 'gzip, deflate, br',
-        'Cache-Control' : 'no-cache',
-        'Connection' : 'keep-alive'
-       
-      },
-      body: JSON.stringify({Username:username,Password:password}) 
-    }).catch(error => {console.log(error)}) 
+const  login  =  async (username, password) => {
 
-    
-    console.log(response)
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+
+        },
+        body: JSON.stringify({Username: username, Password: password})
+    }).catch(error => {
+        console.log(error)
+    })
+
+
+    console.log(await response.json())
     if (response.data.password) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-  return response.data;
+        localStorage.setItem("userToken", JSON.stringify(response.data));
+    }
+    return response.data;
 };
 
 const logout = () => {
