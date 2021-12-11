@@ -34,12 +34,16 @@ public class AuthController : ControllerBase
 	public async Task<IActionResult> Auth([FromBody] LoginModel loginModel)
 	{
 		var existingUserModel = await _userManager.FindByNameAsync(loginModel.Username);
+
+		if (existingUserModel == null)
+			return Problem(
+			"Boy next door;"
+		);
+
 		var passwordCheckResult = await _userManager.CheckPasswordAsync(existingUserModel, loginModel.Password);
 
 		if (!passwordCheckResult)
 			return Unauthorized();
-
-
 
 		return Ok(new
 		{
