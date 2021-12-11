@@ -8,7 +8,8 @@ import CreateGame from "./CreateGame/CreateGame";
 
 
 const GameList = () => {
-    
+
+
     const {user} = useSelector(state => state.auth)
     console.log(user)
     const {games,setGames} = useState([])
@@ -44,7 +45,7 @@ const GameList = () => {
                     <button onClick={() => {logOut()}}>logOut</button>
                 </div>
                 <div>
-                    <CreateGame token={user.token} />
+                    <CreateGame token={user.token} setGames={setGames} />
                 </div>
             </header>
             <h3 className={s.h3}>

@@ -6,7 +6,7 @@ import { createGame } from "../../../react-redux/gameSlice";
 import * as Yup from "yup";
 import s from "./CreateGame.module.css";
 
-const CreateGame = ({token,...props}) => {
+const CreateGame = ({token,setGames,...props}) => {
   const { message } = useSelector((state) => state.message);
   const [loading, setLoading] = useState(false);
 
@@ -30,14 +30,12 @@ const CreateGame = ({token,...props}) => {
     dispatch(createGame({ name,token }))
       .unwrap()
       .then(() => {
-        props.history.push("/profile");
-        window.location.reload();
+       
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
       });
-    
     
   };
   return (

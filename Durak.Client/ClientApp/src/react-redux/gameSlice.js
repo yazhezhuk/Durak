@@ -8,6 +8,7 @@ export const createGame = createAsyncThunk(
     try {
      
       const data = await GameService.createGame(name,token);
+      console.log(data)
       return { user: data };
     } catch (error) {
       const message =
@@ -25,14 +26,15 @@ export const createGame = createAsyncThunk(
 export const gameSlice = createSlice({
     name: 'gameSession',
     initialState: {
-      game: null
+      game: [null]
     },
     extraReducers: {
       [createGame.fulfilled]: (state, action) => {
-        state.game = action.payload.user;
+        state.game = [...state.game, action.payload.game];
+        
       },
       [createGame.rejected]: (state, action) => {
-        state.game = null;
+      
       },
      
     },
