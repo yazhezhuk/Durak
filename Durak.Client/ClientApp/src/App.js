@@ -4,6 +4,7 @@ import Login from "./components/Login/Login";
 import GameList from './components/GameList/GameList';
 import { Route, Routes } from 'react-router-dom';
 import { HttpTransportType, HubConnectionBuilder } from '@microsoft/signalr';
+import CreateGame from './components/GameList/CreateGame/CreateGame';
 
 
 
@@ -32,6 +33,7 @@ function App() {
         <Route exact path='/' element={<GamePlace />}/>
         <Route path='/profile' element={ <GameList />}/>
         <Route path='/login' element={<Login />}/>
+
       </Routes>
 
 

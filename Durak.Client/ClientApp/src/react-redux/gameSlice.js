@@ -1,32 +1,44 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import GameService from '../services/game.service'
+import { setMessage } from "./ProfileSlices/messageSlice";
+
+export const createGame = createAsyncThunk(
+  "game/create",
+  async ({ name,token }, thunkAPI) => {
+    try {
+     
+      const data = await GameService.createGame(name,token);
+      return { user: data };
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    } 
+  }
+);
 
 export const gameSlice = createSlice({
     name: 'gameSession',
     initialState: {
-      fool:null,
-      gamblers:[],
-      queue: null,
-      setData: null,
-      userAction:null,
+      game: null
     },
-    reducers: {
-      dealCar: (state) => {
-        // Redux Toolkit allows us to write "mutating" logic in reducers. It
-        // doesn't actually mutate the state because it uses the Immer library,
-        // which detects changes to a "draft state" and produces a brand new
-        // immutable state based off those changes
-        state.value += 1
+    extraReducers: {
+      [createGame.fulfilled]: (state, action) => {
+        state.game = action.payload.user;
       },
-      decrement: (state) => {
-        state.value -= 1
+      [createGame.rejected]: (state, action) => {
+        state.game = null;
       },
-      incrementByAmount: (state, action) => {
-        state.value += action.payload
-      },
+     
     },
   })
   
   // Action creators are generated for each case reducer function
-  export const { increment, decrement, incrementByAmount } = gameSlice.actions
+  const { reducer } = gameSlice;
   
-  export default gameSlice.reducer
+  export default reducer

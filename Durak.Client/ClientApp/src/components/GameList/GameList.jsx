@@ -1,19 +1,26 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import s from './GameList.module.css'
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from 'react-router-dom';
+import { Navigate, NavLink } from 'react-router-dom';
 import { logout } from "../../react-redux/ProfileSlices/authSlice";
 import EventBus from '../../common/EventBus'
+import CreateGame from "./CreateGame/CreateGame";
+
 
 const GameList = () => {
+    
     const {user} = useSelector(state => state.auth)
-    const dispatch = useDispatch();
-    debugger
     console.log(user)
+    const {games,setGames} = useState([])
+
+    const dispatch = useDispatch();
+    
+  
     const logOut = useCallback(() => {
         dispatch(logout());
       }, [dispatch]);
     
+      
       useEffect(() => {
         EventBus.on("logout", () => {
             logOut();
@@ -34,9 +41,11 @@ const GameList = () => {
 
                 </div>
                 <div>
-                    <button onClick={logOut()}>logOut</button>
+                    <button onClick={() => {logOut()}}>logOut</button>
                 </div>
-               
+                <div>
+                    <CreateGame token={user.token} />
+                </div>
             </header>
             <h3 className={s.h3}>
                 Game list

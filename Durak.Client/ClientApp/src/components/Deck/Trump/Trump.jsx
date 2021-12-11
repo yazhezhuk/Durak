@@ -5,7 +5,7 @@ import s from './Trump.module.css'
 const Trump = ({trump}) =>{
     return (
         <div className={s.trump}>
-            <CardOpen suit={trump.suit} rank={''} />
+            <CardOpen suit={"trump.suit"} rank={''} />
         </div>
     )
 }
