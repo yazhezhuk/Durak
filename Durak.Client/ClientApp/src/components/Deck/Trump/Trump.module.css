@@ -4,5 +4,5 @@
   cursor: auto;
   position: absolute;
   z-index: 0;
-  transform: rotate(90deg) translateY(-70px);
+  transform: rotate(90deg) translateY(-30px);
 }
