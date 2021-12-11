@@ -80,7 +80,29 @@ public class MoveController : ControllerBase
 			return Problem("invalid action!");
 		}
 
-		_moveService.PlaceCard(game,defendModel.PlayerCard,game.AttackPlayer);
+		_moveService.DefendFromCard(game.CurrentPlayer,game,defendModel.PlayerCard,defendModel.EnemyCard);
+
+		return Ok(new { game });
+	}
+
+	[HttpPost("pass")]
+	public IActionResult Pass()
+	{
+
+		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
+
+		var gameSession = _gameSessionRepository.GetByUserName(currentUser.UserName);
+		var game = gameSession.Game;
+
+
+		if (!game.ValidateUserCanMove(currentUser, Role.Both))
+		{
+			//_eventPublisher.PublishEvent(new InvalidActionIntegrationEvent());
+			return Problem("invalid action!");
+		}
+
+		_moveService.PassTurn(game,game.CurrentPlayer);
 
 		return Ok(new { game });
 	}

@@ -64,16 +64,15 @@ public class Game : BaseEntity<int>, IRootEntity
 		var playerToPass = Players.FirstOrDefault(user => !user.CanMove);
 		CurrentPlayer.CanMove = false;
 		playerToPass.CanMove = true;
-
-		Events.Add(new EndTurnApplicationEvent(this));
-
 	}
 
 	public void HandsUp()
 	{
 		Field.RemoveAllCards();
-		Events.Add(new EndTurnApplicationEvent(this));
+		ChangeSides();
+		Events.Add(new EndTurnApplicationEvent(this,true));
 	}
+
 
 	public void ChangeSides()
 	{

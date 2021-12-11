@@ -16,7 +16,8 @@ public class EndTurnEventHandler : BaseEventHandler<EndTurnApplicationEvent>
 
 	public override Task Handle(EndTurnApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		notification.Game.ChangeSides();
+		if (notification.IsPlayerDefended)
+			notification.Game.ChangeSides();
 		notification.Game.PassMove();
 
 		_gameRepository.Update(notification.Game);

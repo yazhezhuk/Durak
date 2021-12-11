@@ -43,6 +43,30 @@ public class GameController : ControllerBase
 		return Ok(new { game });
 	}
 
+	[HttpGet("all")]
+	public List<GameSessionModel> GetAll()
+	{
+		var game = _gameSessionRepository.GetAll();
+
+
+		return game.Select(g => new GameSessionModel
+			{
+				FirstUser = new UserModel
+				{
+					Email = g.Game.AttackPlayer?.AppUser.Email ?? "",
+					Name = g.Game.AttackPlayer?.AppUser.UserName ?? ""
+				},
+				SecondUser = new UserModel
+				{
+					Email = g.Game.DefencePlayer?.AppUser.Email ?? "",
+					Name = g.Game.DefencePlayer?.AppUser.UserName ?? ""
+				},
+				Name = g.Game.Name
+
+			})
+			.ToList();
+	}
+
 	[HttpPost("connect")]
 	public IActionResult Connect([FromBody] GameModel gameModel)
 	{
