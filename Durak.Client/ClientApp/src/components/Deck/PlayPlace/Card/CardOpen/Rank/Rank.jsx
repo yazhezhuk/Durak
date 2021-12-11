@@ -2,17 +2,18 @@ import React from "react";
 import s from './Rank.module.css'
 import Suit from "../Suit/Suit";
 
-const Rank = () => {
+const Rank = ({suit,rank}) => {
+  
     return (
         <div className={s.rank}>
             <div className={s.rank_high}>
-                7
+               {rank}
             </div>
 
-            <Suit />
+            <Suit  suit={suit}/>
 
             <div className={s.rank_low}>
-                8
+            {rank}
             </div>
         </div>
 

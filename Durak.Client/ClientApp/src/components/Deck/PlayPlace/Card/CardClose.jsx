@@ -6,7 +6,7 @@ import cardClose from '../../../../assets/img/CardClose.png'
 const CardClose = () => {
     return (
         <div className={s.cardClose}>
-            <img src={cardClose}/>
+            
         </div>
 
     )

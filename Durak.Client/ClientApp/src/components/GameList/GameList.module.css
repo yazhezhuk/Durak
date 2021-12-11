@@ -1,6 +1,8 @@
 .gameList {
     width: 100%;
-    max-width: 500px;
+    display: flex;
+    
+    max-width: 800px;
     height: 250px;
     background: green;
     border: 10px solid #78401b;

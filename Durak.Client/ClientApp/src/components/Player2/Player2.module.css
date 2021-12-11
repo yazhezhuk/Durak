@@ -3,9 +3,11 @@
     width: 850px;
     height: 175px;
     margin: 0 auto 25px;
-
+    justify-content: space-evenly;
     /*border: 1px solid black;*/
 
 }
-
-
+.card:hover {
+    margin-top: -20px;
+    transition: 0.2s;
+}

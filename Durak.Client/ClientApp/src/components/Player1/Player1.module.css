@@ -3,7 +3,7 @@
     margin: 25px auto 0;
     width: 850px;
     height: 175px;
-
+    justify-content: space-evenly;
     /*border: 1px solid black;*/
 
 }

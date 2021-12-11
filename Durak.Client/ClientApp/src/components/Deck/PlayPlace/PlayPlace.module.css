@@ -1,11 +1,25 @@
 .playPlace {
     display: flex;
-    width: 700px;
-    height: 190px;
-    margin-left: 55px;
-
-    /*border: 1px solid black;*/
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    padding-right: 20%;
 
 
 }
 
+.cardPair {
+    position: relative;
+      width: 10rem;
+      height: 9rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+
+.card{
+    position: absolute;
+}
+.card:nth-child(2) {
+    transform: rotate(25deg);
+  }

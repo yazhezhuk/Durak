@@ -1,8 +1,8 @@
 /*Козирь*/
 .trump {
-    width: 75px;
-    height: 106px;
-    background: deeppink;
-    margin-top: 45px;
-
+  user-select: none;
+  cursor: auto;
+  position: absolute;
+  z-index: 0;
+  transform: rotate(90deg) translateY(-70px);
 }

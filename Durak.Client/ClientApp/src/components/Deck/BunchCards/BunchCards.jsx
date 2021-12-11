@@ -1,14 +1,13 @@
 import React from "react";
-import s from './BunchCards.module.css'
+import s from "./BunchCards.module.css";
 import CardClose from "../PlayPlace/Card/CardClose";
 
-const BunchCards = () => {
-    return (
-        <div className={s.bunchCards}>
-            <CardClose />
+const BunchCards = ({ deckSize }) => {
+  return (
+     <div className={s.bunchCards}>
+          <CardClose />
+    </div>
+  );
+};
 
-        </div>
-    )
-}
-
-export default BunchCards
+export default BunchCards;

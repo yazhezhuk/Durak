@@ -1,10 +1,20 @@
 .gamePlace {
-    width: 1000px;
-    height: 600px;
-    background: green;
+  width: 70%;
+  height: 70vh;
+  background: green;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /*margin: 0 auto;*/
 
-    /*margin: 0 auto;*/
+  border: 50px solid #78401b;
+  border-radius: 100px;
+}
+.cards {
+  display: flex;
+}
 
-    border: 50px solid #78401b;
-    border-radius: 100px;
+.actionPanel{
+    display: flex;
+    justify-content: center;
 }
