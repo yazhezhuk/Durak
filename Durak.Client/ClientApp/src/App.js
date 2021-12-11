@@ -3,6 +3,7 @@ import GamePlace from './components/GamePlace/GamePlace';
 import Login from "./components/Login/Login";
 import GameList from './components/GameList/GameList';
 import { Route, Routes } from 'react-router-dom';
+import { HttpTransportType, HubConnectionBuilder } from '@microsoft/signalr';
 
 
 
