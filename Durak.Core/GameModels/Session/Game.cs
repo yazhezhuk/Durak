@@ -1,3 +1,5 @@
+using Durak.Core.Events;
+using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Fields;
@@ -31,10 +33,13 @@ public class Game : BaseEntity<int>, IRootEntity
 	public GameState GameState { get; set; }
 
 	public Player? AttackPlayer => Players.FirstOrDefault(
-		p => p.Role == Role.Attacker);
+		p => p.CurrentRole == Role.Attacker);
 
 	public Player? DefencePlayer => Players.FirstOrDefault(
-		p => p.Role == Role.Defender);
+		p => p.CurrentRole == Role.Defender);
+
+	public Player? CurrentPlayer =>
+		Players.FirstOrDefault(player => player.CanMove);
 
 	public void RollTrumpLear()
 	{
@@ -44,13 +49,34 @@ public class Game : BaseEntity<int>, IRootEntity
 		TrumpLear = (Lear)randomNum;
 	}
 
-	public bool ValidateUserHaveRightRole(AppUser appUser,Role _expected) =>
-		Players.FirstOrDefault(user => user.AppUser.UserName == appUser.UserName)
-			.Role == _expected;
 
+	public bool ValidateUserCanMove(AppUser appUser, Role _expected)
+	{
+		var player = Players.FirstOrDefault(user =>
+			user.AppUser.UserName == appUser.UserName);
+
+		return (player.CurrentRole == _expected && player.CanMove) ||
+		       (_expected == Role.Both && player.CanMove);
+	}
+
+	public void PassMove()
+	{
+		var playerToPass = Players.FirstOrDefault(user => !user.CanMove);
+		CurrentPlayer.CanMove = false;
+		playerToPass.CanMove = true;
+
+		Events.Add(new EndTurnApplicationEvent(this));
+
+	}
+
+	public void HandsUp()
+	{
+		Field.RemoveAllCards();
+		Events.Add(new EndTurnApplicationEvent(this));
+	}
 
 	public void ChangeSides()
 	{
-		(AttackPlayer.Role, DefencePlayer.Role) = (DefencePlayer.Role, AttackPlayer.Role);
+		(AttackPlayer.CurrentRole, DefencePlayer.CurrentRole) = (DefencePlayer.CurrentRole, AttackPlayer.CurrentRole);
 	}
 }

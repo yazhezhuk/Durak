@@ -1,9 +1,13 @@
-using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
+using Durak.Core.GameModels.Session;
 
-namespace Durak.Core.Events;
+namespace Durak.Core.Events.ApplicationEvents;
 
 public class EndTurnApplicationEvent : BaseApplicationEvent
 {
+	public readonly Game Game;
 
+	public EndTurnApplicationEvent(Game game)
+	{
+		Game = game;
+	}
 }

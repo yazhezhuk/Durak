@@ -24,8 +24,6 @@ public class MoveController : ControllerBase
 	private readonly IGameSessionRepository _gameSessionRepository;
 	private readonly IFieldValidator _fieldValidator;
 	private readonly IMoveService _moveService;
-
-	private readonly AppUser _currentUser;
 	private readonly GameSession _currentGameSession;
 
 
@@ -42,19 +40,22 @@ public class MoveController : ControllerBase
 		_userManager = userManager;
 		_eventPublisher = eventPublisher;
 
-		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-		_currentUser =_userManager.FindByNameAsync(currentUserName).Result;
+
 	}
 
 	[HttpPost("attack")]
 	public IActionResult Attack([FromBody] AttackModel attackModel)
 	{
+		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
+
 		var gameSession = _gameSessionRepository.GetByGameName(attackModel.GameName);
 		var game = gameSession.Game;
 
-		if (game.ValidateUserHaveRightRole(_currentUser, Role.Attacker)
+		if (!game.ValidateUserCanMove(currentUser, Role.Attacker))
 		{
-
+			//_eventPublisher.PublishEvent(new InvalidActionIntegrationEvent());
+			return Problem("invalid action!");
 		}
 
 		_moveService.PlaceCard(game,attackModel.Card,game.AttackPlayer);
@@ -66,11 +67,20 @@ public class MoveController : ControllerBase
 	public IActionResult Defend([FromBody] DefendModel defendModel)
 	{
 
-		var gameSession = _gameSessionRepository.GetByUserName(_currentUser.UserName);
+		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
+
+		var gameSession = _gameSessionRepository.GetByUserName(currentUser.UserName);
 		var game = gameSession.Game;
 
 
-		_moveService.PlaceCard(game,attackModel.Card,game.AttackPlayer);
+		if (!game.ValidateUserCanMove(currentUser, Role.Defender))
+		{
+			//_eventPublisher.PublishEvent(new InvalidActionIntegrationEvent());
+			return Problem("invalid action!");
+		}
+
+		_moveService.PlaceCard(game,defendModel.PlayerCard,game.AttackPlayer);
 
 		return Ok(new { game });
 	}

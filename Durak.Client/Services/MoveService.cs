@@ -1,3 +1,5 @@
+using System.Linq;
+using Durak.Core;
 using Durak.Core.Events;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Fields;
@@ -21,34 +23,60 @@ namespace Durak.Client.Services;
 
 		public void PlaceCard(Game game, Card card, Player player)
 		{
-			if (game.GameState != GameState.Ongoing)
+			var gameCard = new GameCard(game.Id, card, player.Id);
+			if (game.GameState != GameState.Ongoing)// || !player.PlayerHand.Cards.Contains(gameCard))
 				throw new InvalidOperationException("Cant place card in this game");
-
-			if (player.Id != game.AttackPlayer.Id)
-			{
-				game.Events.Add(new ErrorApplicationEvent());
-				return;
-			}
 
 			if (_fieldValidator.IsFieldEmpty(game.Field) ||
 			    (_fieldValidator.CanPlaceAnotherCard(game.Field,player,card)))
 			{
-				var playedCard = new GameCard(game.Id, card, player.Id);
-				game.Field.PlayCard(playedCard);
-
+				game.Field.PlayCard(gameCard);
+				player.PlayerHand.DrawCard(gameCard);
 			}
 
 			_fieldRepository.Update(game.Field);
 		}
 
-		public void TakeCards()
-		{ }
-
-		public void DefendFromCard(Game game, Card playerCard, Card enemyCard, Player player)
+		public void TakeCards(Player player,Game game)
 		{
+			game.ValidateUserCanMove(player.AppUser, Role.Defender);
 
+			var playerToTake = game.DefencePlayer;
+
+			foreach (var playedCard in game.Field.PlayedCards)
+			{
+				game.DefencePlayer.PlayerHand.AddCard(playedCard);
+				game.Field.RemoveCard(playedCard);
+			}
+			PassTurn(game,player);
 		}
 
-		public void EndTurn()
-		{ }
+		public void DefendFromCard(Player player, Game game, Card playerCard, Card enemyCard)
+		{
+			game.ValidateUserCanMove(player.AppUser, Role.Defender);
+
+			var isYourCardIsTrump = playerCard.Lear == game.TrumpLear;
+			var isEnemyCardIsTrump = enemyCard.Lear == game.TrumpLear;
+
+			if (playerCard.TryBeatAnother(enemyCard, isEnemyCardIsTrump, isEnemyCardIsTrump))
+			{
+				var gameCard = new GameCard(game.Id, playerCard);
+				var enemyGameCard = game.Field.PlayedCards.First(card => card.Card == enemyCard);
+				game.Field.PlayCardToDefend(gameCard, enemyGameCard);
+			}
+		}
+
+		public void PassTurn(Game game, Player player)
+		{
+			game.ValidateUserCanMove(player.AppUser, Role.Both);
+
+			game.PassMove();
+		}
+
+		public void HandsUp(Game game, Player player)
+		{
+			game.ValidateUserCanMove(player.AppUser, Role.Attacker);
+
+			game.HandsUp();
+		}
 	}

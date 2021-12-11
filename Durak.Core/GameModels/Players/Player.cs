@@ -9,6 +9,7 @@ namespace Durak.Core.GameModels.Players;
 
 public class Player : BaseEntity<int>, IRootEntity
 {
+	public bool CanMove { get; set; }
 	public Role CurrentRole { get; set; }
 	public string AppUserId { get; set; }
 	public AppUser AppUser { get; set; }

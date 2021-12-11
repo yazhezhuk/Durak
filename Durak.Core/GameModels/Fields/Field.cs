@@ -33,6 +33,9 @@ public class Field : BaseEntity<int>, IRootEntity
 		}
 	}
 
+
+
+
 	public void RemoveCard(GameCard card)
 	{
 		PlayedCards.Remove(card);
@@ -43,6 +46,12 @@ public class Field : BaseEntity<int>, IRootEntity
 	{
 		PlayedCards.Add(card);
 		Events.Add(new PlaceCardApplicationEvent(card));
+	}
+
+	public void PlayCardToDefend(GameCard playerCard,GameCard enemyCard)
+	{
+		PlayedCards.Add(playerCard);
+		//Events.Add(new CardDefeatedIntegrationEvent(playerCard,enemyCard));
 	}
 
 }

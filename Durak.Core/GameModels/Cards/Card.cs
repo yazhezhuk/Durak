@@ -28,15 +28,13 @@ public record Card : IJsonSerializable, IRootEntity
 		Rank = rank;
 	}
 
-	public BaseApplicationEvent BeatAnother(GameCard enemyCard, bool isEnemyCardPrime)
+	public bool TryBeatAnother(Card enemyCard, bool isYourCardIsPrime, bool isEnemyCardPrime)
 	{
-		var isYourCardIsPrime = isEnemyCardPrime && Lear == enemyCard.Card.Lear;
 
-		if (isEnemyCardPrime &&
-		    (isEnemyCardPrime != isYourCardIsPrime || enemyCard.Card.Rank > Rank))
-			return new BadCardApplicationEvent();
-
-		return new BeatOpponentCardApplicationEvent(this,enemyCard.Card);
+		if ((isYourCardIsPrime && isEnemyCardPrime) ||
+		    (!isYourCardIsPrime && !isEnemyCardPrime))
+			return enemyCard.Rank < Rank;
+		return !isEnemyCardPrime;
 	}
 
 	public string ToJson()

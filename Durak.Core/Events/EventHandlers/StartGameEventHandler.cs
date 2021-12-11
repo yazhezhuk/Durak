@@ -20,6 +20,9 @@ public class StartGameEventHandler : INotificationHandler<ApplicationEvents.Star
 
 	public Task Handle(ApplicationEvents.StartGameApplicationEvent notification, CancellationToken cancellationToken)
 	{
+
+		notification.Game.AttackPlayer.CanMove = true;
+		notification.Game.DefencePlayer.CanMove = false;
 		notification.Game.GameState = GameState.Ongoing;
 		_gameRepository.Update(notification.Game);
 
