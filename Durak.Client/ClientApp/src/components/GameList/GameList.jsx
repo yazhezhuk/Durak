@@ -6,9 +6,10 @@ import { logout } from "../../react-redux/ProfileSlices/authSlice";
 import EventBus from '../../common/EventBus'
 
 const GameList = () => {
-    const {user: currentUser} = useSelector(state => state.auth)
+    const {user} = useSelector(state => state.auth)
     const dispatch = useDispatch();
-    console.log(localStorage)
+    debugger
+    console.log(user)
     const logOut = useCallback(() => {
         dispatch(logout());
       }, [dispatch]);
@@ -22,18 +23,18 @@ const GameList = () => {
             EventBus.remove("logout");
           }
       }, [logOut])
-    // if (!currentUser) {
-    //     return <Navigate  to="/login" />;
-    //   }
+    if (!user) {
+        return <Navigate  to="/login" />;
+      }
     return (
         <div className={s.gameList}>
             <header className={s.userData}>
                 <div>
-                     <p>Player <span><strong></strong></span></p>
-                <p>Password <span><strong></strong></span></p>
+                     <p>Player </p>
+
                 </div>
                 <div>
-                    <button onClick={logOut}>logOut</button>
+                    <button onClick={logOut()}>logOut</button>
                 </div>
                
             </header>

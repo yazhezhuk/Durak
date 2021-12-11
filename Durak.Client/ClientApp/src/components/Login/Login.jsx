@@ -77,15 +77,15 @@ const Login = (props) => {
             <ErrorMessage name="password" component="div" />
           </div>
 
-          <div className="">
+          <div >
             <button
               type="submit"
-              className=""
+
               disabled={loading}
               
             >
               {loading && (
-                <span className="">loading</span>
+                <span >loading</span>
               )}
               <span>Login</span>
             </button>
@@ -95,8 +95,8 @@ const Login = (props) => {
       </Formik>
     </div>
     {message && (
-        <div className="">
-          <div className="" role="alert">
+        <div >
+          <div  role="alert">
             {message}
           </div>
         </div>

@@ -1,46 +1,66 @@
-const suits = ["spades", "diamonds", "clubs", "hearts"];
-const ranks = ["6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+import React, { useState, useEffect, useRef } from 'react';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
-export const shuffleDeck = (deck) => {
-  const deckCopy = [...deck];
-  for (let i = 0; i < 1000; i++) {
-    const location1 = Math.floor(Math.random() * deckCopy.length);
-    const location2 = Math.floor(Math.random() * deckCopy.length);
-    let tmp = deckCopy[location1];
+import ChatWindow from './ChatWindow/ChatWindow';
+import ChatInput from './ChatInput/ChatInput';
 
-    deckCopy[location1] = deckCopy[location2];
-    deckCopy[location2] = tmp;
-  }
-  return deckCopy;
-};
+const Chat = () => {
+    const [ connection, setConnection ] = useState(null);
+    const [ chat, setChat ] = useState([]);
+    const latestChat = useRef(null);
 
-const getDeck = () => {
-    let deck = [];
-    let id = 0
-    for (let suit of suits) {
-      for (let rank of ranks) {
-        let card = { id:id++, rank: rank, suit: suit };
-        deck.push(card);
-      }
+    latestChat.current = chat;
+
+    useEffect(() => {
+        const newConnection = new HubConnectionBuilder()
+            .withUrl('https://localhost:5001/hubs/chat')
+            .withAutomaticReconnect()
+            .build();
+
+        setConnection(newConnection);
+    }, []);
+
+    useEffect(() => {
+        if (connection) {
+            connection.start()
+                .then(result => {
+                    console.log('Connected!');
+    
+                    connection.on('ReceiveMessage', message => {
+                        const updatedChat = [...latestChat.current];
+                        updatedChat.push(message);
+                    
+                        setChat(updatedChat);
+                    });
+                })
+                .catch(e => console.log('Connection failed: ', e));
+        }
+    }, [connection]);
+
+    const sendMessage = async (user, message) => {
+        const chatMessage = {
+            user: user,
+            message: message
+        };
+
+        if (connection.connectionStarted) {
+            try {
+                await connection.send('SendMessage', chatMessage);
+            }
+            catch(e) {
+                console.log(e);
+            }
+        }
+        else {
+            alert('No connection to server yet.');
+        }
     }
-    return deck;
-  };
 
-  
-export const deck = getDeck()
-
-// export const deck = getDeck();
-
-// export const dealCard = (deck) => {
-//   return deck.pop();
-// };
-// export const getTrump = (deck) => {
-//   return dealCard(deck);
-// };
-
-const Player1 = {
-  Cards: [],
-};
-const Player2 = {
-  Cards: [],
+    return (
+        <div>
+            <ChatInput sendMessage={sendMessage} />
+            <hr />
+            <ChatWindow chat={chat}/>
+        </div>
+    );
 };

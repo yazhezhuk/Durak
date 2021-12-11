@@ -13,7 +13,7 @@ const GamePlace = () => {
   const { cards } = useSelector((state) => state.deck);
   const player1Hand = cards.slice(7, 13);
   const player2Hand = cards.slice(1, 7);
-
+  
   const [attacker, setAttacker] = useState(null);
   const [deckLength, setDeckLength] = useState(0);
   const [trumpCard, setTrumpCard] = useState(null);
@@ -33,7 +33,7 @@ const GamePlace = () => {
     
     
   }, [dispatch])
- 
+  console.log(cards)
 
   const [canShowTakeButton, setCanShowTakeButton] = useState(true)
   const [canShowHangUpButton, SetCanShowHangUpButton] = useState(false)
@@ -87,7 +87,7 @@ const GamePlace = () => {
       <Player1 opponentCards={player1Hand} />
 
       <div className={s.cards}>
-        <Deck />
+        <Deck deck={cards}/>
         <PlayPlace pairs={pairCards}  />
 
       </div>

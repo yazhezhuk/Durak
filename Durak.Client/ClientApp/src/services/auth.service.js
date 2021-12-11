@@ -19,12 +19,13 @@ const  login  =  async (username, password) => {
         console.log(error)
     })
 
-
-    console.log(await response.json())
-    if (response.data.password) {
-        localStorage.setItem("userToken", JSON.stringify(response.data));
+    const token = await response.json()
+    console.log(token)
+    if (token) {
+        const data = await JSON.stringify(token)
+        localStorage.setItem("user",  data);
     }
-    return response.data;
+    return JSON.stringify(token)
 };
 
 const logout = () => {

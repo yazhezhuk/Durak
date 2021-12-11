@@ -3,9 +3,9 @@ import s from './Deck.module.css'
 import BunchCards from "./BunchCards/BunchCards";
 import Trump from "./Trump/Trump";
 
-import {deck} from '../../scripts'
 
-const Deck = () => {
+const Deck = ({deck}) => {
+
     return (
         <div className={s.deck}>
            
