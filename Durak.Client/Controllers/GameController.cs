@@ -53,13 +53,13 @@ public class GameController : ControllerBase
 			{
 				FirstUser = new UserModel
 				{
-					Email = g.Game.AttackPlayer?.AppUser.Email ?? "",
-					Name = g.Game.AttackPlayer?.AppUser.UserName ?? ""
+					Email = g.Game.AttackPlayer?.AppIdentity.Email ?? "",
+					Name = g.Game.AttackPlayer?.AppIdentity.UserName ?? ""
 				},
 				SecondUser = new UserModel
 				{
-					Email = g.Game.DefencePlayer?.AppUser.Email ?? "",
-					Name = g.Game.DefencePlayer?.AppUser.UserName ?? ""
+					Email = g.Game.DefencePlayer?.AppIdentity.Email ?? "",
+					Name = g.Game.DefencePlayer?.AppIdentity.UserName ?? ""
 				},
 				Name = g.Game.Name
 
@@ -75,12 +75,17 @@ public class GameController : ControllerBase
 
 		var gameSession = _gameSessionRepository.GetByGameName(gameModel.Name);
 
-		var result =  _gameSessionService.HandlePlayerConnection(appUser,gameSession);
-
-
-		return Ok(new
+		try
 		{
-			result
-		});
+			var result = _gameSessionService.HandlePlayerConnection(appUser, gameSession);
+			return Ok(new
+				{ result });
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			return Ok(new
+				{ e });
+		}
 	}
 }

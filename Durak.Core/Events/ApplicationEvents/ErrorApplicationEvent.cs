@@ -1,9 +1,10 @@
-using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
+using Durak.Core.GameModels.Players;
 
-namespace Durak.Core.Events;
+namespace Durak.Core.Events.ApplicationEvents;
 
 public class ErrorApplicationEvent : BaseApplicationEvent
 {
 
+	public ErrorApplicationEvent(Player actionClaimant) : base(actionClaimant)
+	{ }
 }

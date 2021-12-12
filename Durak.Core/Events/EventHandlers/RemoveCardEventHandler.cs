@@ -1,20 +1,21 @@
 using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.Events.IntegrationEvents;
+using Durak.Core.GameModels;
 using Durak.Core.Interfaces;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Durak.Core.Events.EventHandlers;
 
-public class RemoveCardEventHandler : BaseEventHandler<RemoveCardApplicationEvent>
+public class CardTakenEventHandler : BaseEventHandler<CardTakenApplicationEvent>
 {
-
-	public RemoveCardEventHandler(IIntegrationEventPublisher eventPublisher) : base(eventPublisher)
+	public CardTakenEventHandler(IServiceProvider serviceProvider) : base(serviceProvider)
 	{ }
 
-	public override Task Handle(RemoveCardApplicationEvent notification, CancellationToken cancellationToken)
+	public override Task Handle(CardTakenApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		return _eventPublisher.PublishEvent(new RemoveCardIntegrationEvent(notification.Card));
+		Logger.LogInformation("Card:{} added to hand", notification.Card);
+		return EventPublisher.PublishEvent(new RemoveCardIntegrationEvent(notification.Card));
 	}
-
-
 }

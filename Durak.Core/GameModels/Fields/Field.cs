@@ -34,18 +34,20 @@ public class Field : BaseEntity<int>, IRootEntity
 	}
 
 
-
-
 	public void RemoveCard(GameCard card)
 	{
+		if (PlayedCards.Count > 0 && PlayedCards.Any(c => c.Id == card.Id) &&
+		    PlayedCards.Any(c => c.Card == card.Card))
+			throw new ArgumentException("Card inst on the field",nameof(card));
+
 		PlayedCards.Remove(card);
-		Events.Add(new RemoveCardApplicationEvent(card));
+		Events.Add(new CardRemovedFromField(card.PlayerId,card.Card));
 	}
 
 	public void PlayCard(GameCard card)
 	{
 		PlayedCards.Add(card);
-		Events.Add(new PlaceCardApplicationEvent(card));
+		Events.Add(new PlaceCardApplicationEvent(card.PlayerId,card));
 	}
 
 	public void PlayCardToDefend(GameCard playerCard,GameCard enemyCard)

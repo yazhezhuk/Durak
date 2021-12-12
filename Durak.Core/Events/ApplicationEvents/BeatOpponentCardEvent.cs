@@ -1,16 +1,16 @@
 using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.Players;
 
 namespace Durak.Core.Events.ApplicationEvents;
 
 public class BeatOpponentCardApplicationEvent : BaseApplicationEvent
 {
 	private Card _sourceCard;
-	private Card _targerCard;
+	private Card _targetCard;
 
-
-	public BeatOpponentCardApplicationEvent(Card surceCard, Card targerCard)
+	public BeatOpponentCardApplicationEvent(Player player,Card surceCard, Card targerCard) : base(player)
 	{
 		_sourceCard = surceCard;
-		_targerCard = targerCard;
+		_targetCard = targerCard;
 	}
 }
