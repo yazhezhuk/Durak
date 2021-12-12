@@ -56,7 +56,7 @@ builder.Logging.AddConsole();
 
 // For Entity Framework
 builder.Services.AddDbContext<GameContext>(options =>
-	options.UseSqlServer(connectionString:"Server=DESKTOP-E9ICKFV\\SQLEXPRESS;Initial Catalog = GameDb;User Id=chel;Password=bruh3228;"
+	options.UseSqlServer(connectionString: "Server=localhost\\SQLEXPRESS;Initial Catalog=GameDB;Trusted_Connection=True;"
 	),ServiceLifetime.Singleton);
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
