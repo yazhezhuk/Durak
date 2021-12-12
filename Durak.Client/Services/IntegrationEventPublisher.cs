@@ -3,21 +3,29 @@ using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
 using Durak.Core.Services;
 using Durak.Infrastructure.Integration;
+using MediatR;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Durak.Client.Services;
 
 public class IntegrationEventPublisher : IIntegrationEventPublisher
 {
-	private readonly GameHub _gameHub;
+	private readonly IServiceScopeFactory _serviceScopeFactory;
 
-	public IntegrationEventPublisher(GameHub gameHub)
+	public IntegrationEventPublisher(IServiceScopeFactory serviceScopeFactory)
 	{
-		_gameHub = gameHub;
+		_serviceScopeFactory = serviceScopeFactory;
 	}
 
 	public Task PublishEvent(BaseIntegrationEvent integrationEvent)
 	{
-		return integrationEvent.Publish(_gameHub);
+		using(var scope = _serviceScopeFactory.CreateScope())
+		{
+			var gameHub = scope.ServiceProvider.GetRequiredService<GameHub>();
+			integrationEvent.Publish(gameHub);
+
+		}
+
+		return Task.CompletedTask;
 	}
 }

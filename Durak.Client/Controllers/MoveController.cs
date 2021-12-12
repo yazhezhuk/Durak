@@ -80,7 +80,7 @@ public class MoveController : ControllerBase
 			return Problem("invalid action!");
 		}
 
-		_moveService.DefendFromCard(game.CurrentPlayer,game,defendModel.PlayerCard,defendModel.EnemyCard);
+		_moveService.DefendFromCard(game,defendModel.PlayerCard,defendModel.EnemyCard);
 
 		return Ok(new { game });
 	}
@@ -109,5 +109,3 @@ public class MoveController : ControllerBase
 
 
 }
-
-

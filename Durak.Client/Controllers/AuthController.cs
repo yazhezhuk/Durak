@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Durak.Client.Models;
 using Durak.Core;
+using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Players;
+using Durak.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +21,19 @@ namespace Durak.Client.Controllers;
 public class AuthController : ControllerBase
 {
 	private readonly UserManager<AppUser> _userManager;
+	private readonly IGameSessionRepository _gameSessionRepository;
+	private readonly IIntegrationEventPublisher _eventPublisher;
 	private readonly RoleManager<IdentityRole> _roleManager;
 	private IConfiguration _configuration;
 
 
-	public AuthController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+	public AuthController(IGameSessionRepository gameSessionRepository,
+		IIntegrationEventPublisher eventPublisher,
+		UserManager<AppUser> userManager,
+		RoleManager<IdentityRole> roleManager)
 	{
+		_gameSessionRepository = gameSessionRepository;
+		_eventPublisher = eventPublisher;
 		_roleManager = roleManager;
 		_userManager = userManager;
 	}
@@ -35,7 +44,7 @@ public class AuthController : ControllerBase
 	{
 		var existingUserModel = await _userManager.FindByNameAsync(loginModel.Username);
 
-		if (existingUserModel == null)
+			if (existingUserModel == null)
 			return Problem(
 			"Boy next door;"
 		);

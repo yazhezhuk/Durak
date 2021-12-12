@@ -1,6 +1,8 @@
 using Durak.Core.Events;
 using Durak.Core.Events.ApplicationEvents;
+using Durak.Core.Events.EventHandlers;
 using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
 using Newtonsoft.Json;
@@ -27,17 +29,18 @@ public class Deck : BaseEntity<int>, IRootEntity
 	}
 	public void DrawCard(GameCard card)
 	{
-		if (!Cards.Contains(card))
+		if (Cards.All(c => c.Id != card.Id) &&
+		    Cards.All(c => c.Card != card.Card))
 			throw new ArgumentException("Card cannot be found!");
 
 		Cards.Remove(card);
-		Events.Add(new CardDrawnToHandApplicationEvent());
+		Events.Add(new CardRemovedFromDeckApplicationEvent(card.Card,Player.None));
 	}
-
 
 	public void AddCard(GameCard card)
 	{
-		if (Cards.Contains(card))
+		if (Cards.Count > 0 && Cards.Any(c => c.Id == card.Id) &&
+		    Cards.Any(c => c.Card == card.Card))
 			throw new AggregateException("Card already exists!");
 
 		Cards.Add(card);

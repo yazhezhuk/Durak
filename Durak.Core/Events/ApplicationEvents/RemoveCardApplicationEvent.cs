@@ -1,13 +1,14 @@
 using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
+using Durak.Core.GameModels.Players;
 
 namespace Durak.Core.Events.ApplicationEvents;
 
-public class RemoveCardApplicationEvent : BaseApplicationEvent
+public class CardTakenApplicationEvent : BaseApplicationEvent
 {
 	public readonly GameCard Card;
 
-	public RemoveCardApplicationEvent(GameCard card)
+	public CardTakenApplicationEvent(Player player,GameCard card) : base(player)
 	{
 		Card = card;
 	}

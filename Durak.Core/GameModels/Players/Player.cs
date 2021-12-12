@@ -12,7 +12,7 @@ public class Player : BaseEntity<int>, IRootEntity
 	public bool CanMove { get; set; }
 	public Role CurrentRole { get; set; }
 	public string AppUserId { get; set; }
-	public AppUser AppUser { get; set; }
+	public AppUser AppIdentity { get; set; }
 	public int GameId { get; set; }
 
 	public Game Game { get; set; }
@@ -23,6 +23,7 @@ public class Player : BaseEntity<int>, IRootEntity
 		GameId = gameId;
 	}
 
+	public static readonly Player None  =  new Player(0, "");
 	public PlayerHand PlayerHand { get; set; }
 
 	public void TakeEnoughCards(Deck deck)

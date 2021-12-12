@@ -23,12 +23,13 @@ public class PlayerHand : BaseEntity<int>,IRootEntity
 
 	public void AddCard(GameCard card)
 	{
-		if (Cards.Contains(card))
+		if (Cards.Count > 0 && Cards.Any(c => c.Id == card.Id) &&
+		    Cards.Any(c => c.Card == card.Card))
 			throw new AggregateException("Card already exists!");
 
 		Cards.Add(card);
 
-		Events.Add(new CardDrawnToHandApplicationEvent());
+		Events.Add(new CardAddedToHandApplicationEvent(PlayerId,card.Card));
 	}
 
 	public string ToJson()
@@ -36,16 +37,17 @@ public class PlayerHand : BaseEntity<int>,IRootEntity
 		return JsonConvert.SerializeObject(Cards);
 	}
 
-	public GameCard DrawCard(GameCard playedCard)
+	public GameCard DrawCard(Card card)
 	{
+		var matchingCard = Cards.FirstOrDefault(c => c.Card == card);
 
-		if (!Cards.Contains(playedCard))
-			throw new AggregateException("This card cannot be drawn");
+		if (matchingCard == null)
+			throw new AggregateException("Card cant be found in the hand.");
 
-		Cards.Remove(playedCard);
-		Events.Add(new CardDrawnFromHandApplicationEvent());
+		Cards.Remove(matchingCard);
 
-		return playedCard;
+		Events.Add(new CardDrawnFromHandApplicationEvent(PlayerId,matchingCard.Card));
+		return matchingCard;
 	}
 
 }

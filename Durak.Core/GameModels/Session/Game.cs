@@ -53,7 +53,7 @@ public class Game : BaseEntity<int>, IRootEntity
 	public bool ValidateUserCanMove(AppUser appUser, Role _expected)
 	{
 		var player = Players.FirstOrDefault(user =>
-			user.AppUser.UserName == appUser.UserName);
+			user.AppIdentity.UserName == appUser.UserName);
 
 		return (player.CurrentRole == _expected && player.CanMove) ||
 		       (_expected == Role.Both && player.CanMove);

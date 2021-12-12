@@ -12,13 +12,13 @@ public class FieldValidator : IFieldValidator
 	public bool CanPlaceAnotherCard(Field field,Player user,Card cardToAdd)
 	{
 		return IsFieldEmpty(field) ||
-		       !IsCardsLimitReached(field, user) &&
-		       IsCardWithSameRankPlaced(field, cardToAdd);
+		       (!IsCardsLimitReached(field, user) &&
+		       IsCardWithSameRankPlaced(field, cardToAdd));
 	}
 
 	private bool IsCardsLimitReached(Field field, Player user)
 	{
-		return field.ListPlacedCards(user).Count > 5;
+		return field.ListPlacedCards(user)?.Count > 5;
 	}
 
 	public bool IsFieldEmpty(Field field)
@@ -28,16 +28,16 @@ public class FieldValidator : IFieldValidator
 
 	public bool IsPlayerClearedTable(Field field,Player enemyUser,Player currentUser)
 	{
-		return field.ListPlacedCards(enemyUser).Count ==
-		       field.ListPlacedCards(currentUser).Count;
+		return field.ListPlacedCards(enemyUser)?.Count ==
+		       field.ListPlacedCards(currentUser)? .Count;
 	}
 
 	public bool IsCardWithSameRankPlaced(Field field,Card cardToCheck)
 	{
 		return field.PlayedCards.Any(card =>
-			card.Card.Rank == cardToCheck.Rank);
+			card.Card.Rank.Equals(cardToCheck.Rank));
 	}
 
 	public bool ValidateUserAttackerRight(AppUser user, Game game) =>
-		game.AttackPlayer.AppUser.UserName == user.UserName;
+		game.AttackPlayer.AppIdentity.UserName == user.UserName;
 }

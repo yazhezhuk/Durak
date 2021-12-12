@@ -3,8 +3,10 @@ using System.Text;
 using Durak.Client.Services;
 using Durak.Core;
 using Durak.Core.Events.ApplicationEvents;
+using Durak.Core.Events.EventHandlers;
 using Durak.Infrastructure.Data;
 using Durak.Core.Events.IntegrationEvents;
+using Durak.Core.GameModels;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Fields;
@@ -30,6 +32,8 @@ builder.Services.AddControllers()
 	.AddNewtonsoftJson(x =>
 		x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(Program));
@@ -51,8 +55,7 @@ builder.Services.AddCors(options =>
 });
 
 
-//Logging misc
-builder.Logging.AddConsole();
+//Logging mis
 
 // For Entity Framework
 builder.Services.AddDbContext<GameContext>(options =>
@@ -62,7 +65,8 @@ builder.Services.AddDbContext<GameContext>(options =>
 builder.Services.AddIdentity<AppUser, IdentityRole>()
 	.AddEntityFrameworkStores<GameContext>()
 	.AddDefaultTokenProviders();
-
+builder.Services.AddLogging(options =>
+	options.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Critical + 1));
 //application events
 builder.Services.AddMediatR(Assembly.GetAssembly(typeof(BaseApplicationEvent)));
 
@@ -80,6 +84,7 @@ builder.Services.AddScoped<IIntegrationEventPublisher, IntegrationEventPublisher
 builder.Services.AddScoped<IFieldValidator, FieldValidator>();
 builder.Services.AddScoped<IGameSessionService, GameSessionService>();
 builder.Services.AddScoped<IMoveService, MoveService>();
+
 
 
 
