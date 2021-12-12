@@ -53,7 +53,7 @@ export const connectGame = createAsyncThunk(
       let data = await response.json(); 
       if (response.status === 200) {
         console.log("connect response", data);
-
+  
         thunkAPI.dispatch(setCurrentGame(name))
         return { isConnected: data };
       } else {
@@ -101,7 +101,6 @@ export const gameSlice = createSlice({
   reducers: {
   setCurrentGame: (state,action) =>{
     state.currentGameName = action.payload
-    console.log(state.currentGameName)
   }
   },
   extraReducers: {
@@ -112,7 +111,8 @@ export const gameSlice = createSlice({
       state.games = [action.payload.games];
     },
     [connectGame.fulfilled]: (state, action) => {
-      state.isConnected = action.payload.isConnected;
+      state.isConnected = action.payload.isConnected.result;
+    
     },
     [connectGame.rejected]: (state, action) => {
       state.isConnected = false

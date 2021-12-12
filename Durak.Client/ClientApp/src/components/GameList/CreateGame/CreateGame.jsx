@@ -6,7 +6,7 @@ import { createGame } from "../../../react-redux/gameSlice";
 import * as Yup from "yup";
 import s from "./CreateGame.module.css";
 
-const CreateGame = ({setLoading,loading,setGames}) => {
+const CreateGame = ({setLoading,loading,games,setGames}) => {
 
 
 
@@ -29,8 +29,13 @@ const CreateGame = ({setLoading,loading,setGames}) => {
     setLoading(true);
     dispatch(createGame({ name}))
       .unwrap()
-      .then((newGame) => {
-        setGames(prevState => [...prevState, newGame])
+      .then((response) => {
+        console.log( response.game)
+
+
+
+        setGames(prevState => [...prevState, response.game])
+
         setLoading(false);
       })
       .catch(() => {

@@ -28,7 +28,7 @@ const GamePlace = () => {
   // const [playerHand, setPlayerHand] = useState([]);
   // const [fool, setFool] = useState(null);
   const [openedCards, setOpenedCards] = useState([]);
-
+  
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
       .withUrl("/gameHub", {

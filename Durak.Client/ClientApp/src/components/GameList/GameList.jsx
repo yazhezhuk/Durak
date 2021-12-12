@@ -13,20 +13,23 @@ const GameList = (props) => {
   const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const dispatch = useDispatch();
-  const [isConnect, setIsConnect] = useState(false)
-  // useEffect(() => {
-  //  dispatch(getAllGames({token})).unwrap().then(allGames =>{
-  //    setGames(allGames)
-  //  })
+  const [isConnect, setIsConnect] = useState(false);
 
-  // }, [dispatch,token])
+  useEffect(() => {
+    setLoading(true)
+    dispatch(getAllGames())
+      .unwrap()
+      .then((response) => {
+        setGames(response.games);
+        setLoading(false)
+      });
+  },[]);
 
   const logOut = useCallback(() => {
     dispatch(logout());
   }, [dispatch]);
 
-  const getAll = (token) => {
-    console.log(token);
+  const getAll = () => {
     setLoading(true);
     dispatch(getAllGames())
       .unwrap()
@@ -50,19 +53,19 @@ const GameList = (props) => {
   if (!user) {
     return <Navigate to="/login" />;
   }
-  if(isConnect){
-    return <Navigate to='/game' />
+  if (isConnect) {
+    return <Navigate to="/game" />;
   }
 
   const handleSelectedGame = (game) => {
     setSelectedGame(game);
   };
   const executeConnect = async (name) => {
-    const resultAction = await dispatch(connectGame({ name })); 
+    const resultAction = await dispatch(connectGame({ name }));
     if (connectGame.fulfilled.match(resultAction)) {
-      console.log("user successfully connected")
+      console.log("user successfully connected");
     }
-    setIsConnect(true)
+    setIsConnect(true);
   };
   return (
     <div className={s.gameList}>
@@ -83,6 +86,7 @@ const GameList = (props) => {
           <CreateGame
             setLoading={setLoading}
             loading={loading}
+            games={games}
             setGames={setGames}
           />
         </div>
@@ -97,7 +101,7 @@ const GameList = (props) => {
           </button>
         </div>
       </header>
-      <div className={s.h3}>
+      <div className={s.gamesContainer}>
         {games &&
           games.map((game, indx) => {
             return (

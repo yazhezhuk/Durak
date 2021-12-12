@@ -8,11 +8,7 @@
     border: 10px solid #78401b;
 }
 
-.h3 {
-    font-size: 21px;
-    text-align: center;
-    text-transform: uppercase;
-}
+
 
 .playerList {
     width: 300px;
@@ -26,9 +22,18 @@
     text-align: center;
     margin-left: 15px;
 }
+.gamesContainer {
+    font-size: 21px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.gamesContainer :hover {
+cursor: pointer;
+}
 .selectedGame{
     background-color: black;
     color: lavender;
-    cursor: pointer;
+    
 }
+
  .notSelected{background-color: lavender;}
