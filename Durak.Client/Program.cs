@@ -49,7 +49,7 @@ builder.Services.AddCors(options =>
 	{
 		policy.AllowAnyHeader()
 			.AllowAnyMethod()
-			.WithOrigins(Helper.ApplicationOptions.DEFAULT_HOST)
+			.WithOrigins(Helper.ApplicationOptions.DEFAULT_HOST,"http://localhost:3001")
 			.AllowCredentials();
 	});
 });
@@ -104,8 +104,8 @@ builder.Services.AddAuthentication(options =>
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidateLifetime = true,
-		ValidIssuer = Helper.ApplicationOptions.DEFAULT_HOST,
-		ValidAudience = Helper.ApplicationOptions.DEFAULT_HOST,
+		ValidIssuer = Helper.ApplicationOptions.DEFAULT_HOST + ";" + " http://localhost:3001",
+		ValidAudience = Helper.ApplicationOptions.DEFAULT_HOST + ";" + " http://localhost:3001",
 		IssuerSigningKey = new SymmetricSecurityKey(
 			Encoding.UTF8.GetBytes(Helper.ApplicationOptions.DEFAULT_SECRET))
 	};

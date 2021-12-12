@@ -14,8 +14,8 @@ public class TurnPassedEventHandler : BaseEventHandler<TurnPassedEvent>
 {
 
 	public TurnPassedEventHandler(IServiceProvider serviceProvider) : base(serviceProvider)
-	{
-	}
+	{ }
+
 
 	public override Task Handle(TurnPassedEvent notification, CancellationToken cancellationToken)
 	{
