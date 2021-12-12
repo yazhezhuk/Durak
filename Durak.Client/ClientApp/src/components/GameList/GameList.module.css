@@ -1,9 +1,9 @@
 .gameList {
     width: 100%;
-    display: flex;
+    height: 100vh;
+
     
-    max-width: 800px;
-    height: 250px;
+
     background: green;
     border: 10px solid #78401b;
 }
@@ -26,3 +26,9 @@
     text-align: center;
     margin-left: 15px;
 }
+.selectedGame{
+    background-color: black;
+    color: lavender;
+    cursor: pointer;
+}
+ .notSelected{background-color: lavender;}

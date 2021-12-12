@@ -1,46 +1,127 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import GameService from '../services/game.service'
-import { setMessage } from "./ProfileSlices/messageSlice";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+import { user } from "./ProfileSlices/authSlice";
+
+
+const API_URL = "http://localhost:3000/api/game/";
 
 export const createGame = createAsyncThunk(
   "game/create",
-  async ({ name,token }, thunkAPI) => {
+  async ({ name }, thunkAPI) => {
     try {
-     
-      const data = await GameService.createGame(name,token);
-      console.log(data)
-      return { user: data };
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    } 
+      const response = await fetch(API_URL + "create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Accept': "*/*",
+          "Accept-Encoding": "gzip, deflate, br",
+          "Cache-Control": "no-cache",
+          'Connection': "keep-alive",
+          'Authorization': `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ Name: name }),
+      });
+      let data = await response.json();
+      console.log("response", data);
+      if (response.status === 200) {
+        return { game: data };
+      } else {
+        return thunkAPI.rejectWithValue(data);
+      }
+    } catch (e) {
+      console.log("Error", e.response.data);
+      thunkAPI.rejectWithValue(e.response.data);
+    }
   }
 );
+export const connectGame = createAsyncThunk(
+  "game/create",
+  async ({ name }, thunkAPI) => {
+    try {
+      const response = await fetch(API_URL + "connect", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Accept': "*/*",
+          "Accept-Encoding": "gzip, deflate, br",
+          "Cache-Control": "no-cache",
+          'Connection': "keep-alive",
+          'Authorization': `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({ Name: name }),
+      });
+      let data = await response.json(); 
+      if (response.status === 200) {
+        console.log("connect response", data);
+
+        thunkAPI.dispatch(setCurrentGame(name))
+        return { isConnected: data };
+      } else {
+        return thunkAPI.rejectWithValue(data);
+      }
+    } catch (e) {
+      console.log("Error", e.response.data);
+      thunkAPI.rejectWithValue(e.response.data);
+    }
+  }
+);
+export const getAllGames = createAsyncThunk("game/getAll", async (thunkAPI) => {
+  try {
+    const response = await fetch(API_URL + "all", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Cache-Control": "no-cache",
+        'Connection': "keep-alive",
+        'Authorization': `Bearer ${user.token}`,
+      },
+    });
+    let data = await response.json();
+    console.log("response", data);
+    if (response.status === 200) {
+      return { games: data };
+    } else {
+      return thunkAPI.rejectWithValue(data);
+    }
+  } catch (e) {
+    console.log("Error", e.response.data);
+    thunkAPI.rejectWithValue(e.response.data);
+  }
+});
 
 export const gameSlice = createSlice({
-    name: 'gameSession',
-    initialState: {
-      game: [null]
+  name: "gameSession",
+  initialState: {
+    games: [],
+    isConnected: false,
+    currentGameName: null,
+  },
+  reducers: {
+  setCurrentGame: (state,action) =>{
+    state.currentGameName = action.payload
+    console.log(state.currentGameName)
+  }
+  },
+  extraReducers: {
+    [createGame.fulfilled]: (state, action) => {
+      state.games = [...state.games, action.payload.game];
     },
-    extraReducers: {
-      [createGame.fulfilled]: (state, action) => {
-        state.game = [...state.game, action.payload.game];
-        
-      },
-      [createGame.rejected]: (state, action) => {
-      
-      },
-     
+    [getAllGames.fulfilled]: (state, action) => {
+      state.games = [action.payload.games];
     },
-  })
-  
-  // Action creators are generated for each case reducer function
-  const { reducer } = gameSlice;
-  
-  export default reducer
+    [connectGame.fulfilled]: (state, action) => {
+      state.isConnected = action.payload.isConnected;
+    },
+    [connectGame.rejected]: (state, action) => {
+      state.isConnected = false
+    },
+  },
+});
+
+// Action creators are generated for each case reducer function
+export const  {setCurrentGame}  = gameSlice.actions
+const { reducer } = gameSlice;
+
+export default reducer;

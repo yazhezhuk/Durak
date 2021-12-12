@@ -3,25 +3,39 @@ import { setMessage } from "./messageSlice";
 
 import AuthService from "../../services/auth.service";
 
-const user = JSON.parse(localStorage.getItem("user"));
+export const user = JSON.parse(localStorage.getItem("user")) ;
 
+const API_URL = "http://localhost:3000/api/auth/";
 
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }, thunkAPI) => {
     try {
-     
-      const data = await AuthService.login(username, password);
-      return { user: data };
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+          "Accept-Encoding": "gzip, deflate, br",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        },
+        body: JSON.stringify({
+          Username: username,
+          Password: password,
+        }),
+      });
+      let data = await response.json();
+      console.log("response", typeof data);
+      if (response.status === 200) {
+        localStorage.setItem("user", JSON.stringify(data));
+        return { user: data };
+      } else {
+        return thunkAPI.rejectWithValue(data);
+      }
+    } catch (e) {
+      console.log("Error", e.response.data);
+      thunkAPI.rejectWithValue(e.response.data);
     }
   }
 );
@@ -31,23 +45,22 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 });
 
 const initialState = user
-  ? { isLoggedIn: true, user }
+  ? { isLoggedIn: true,  user }
   : { isLoggedIn: false, user: null };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   extraReducers: {
-    [login.fulfilled]: (state, action) => {
+    [login.fulfilled]: (state, { payload }) => {
       state.isLoggedIn = true;
-      state.user = action.payload.user;
+      state.user = payload.user;
     },
     [login.rejected]: (state, action) => {
       state.isLoggedIn = false;
       state.user = null;
     },
     [logout.fulfilled]: (state, action) => {
-      
       state.isLoggedIn = false;
       state.user = null;
     },

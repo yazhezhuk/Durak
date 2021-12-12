@@ -6,9 +6,9 @@ import { createGame } from "../../../react-redux/gameSlice";
 import * as Yup from "yup";
 import s from "./CreateGame.module.css";
 
-const CreateGame = ({token,setGames,...props}) => {
-  const { message } = useSelector((state) => state.message);
-  const [loading, setLoading] = useState(false);
+const CreateGame = ({setLoading,loading,setGames}) => {
+
+
 
 
   const dispatch = useDispatch();
@@ -27,10 +27,10 @@ const CreateGame = ({token,setGames,...props}) => {
   const handleLogin = (formValue) => {
     const { name } = formValue;
     setLoading(true);
-    dispatch(createGame({ name,token }))
+    dispatch(createGame({ name}))
       .unwrap()
-      .then(() => {
-       
+      .then((newGame) => {
+        setGames(prevState => [...prevState, newGame])
         setLoading(false);
       })
       .catch(() => {
@@ -49,7 +49,7 @@ const CreateGame = ({token,setGames,...props}) => {
         >
           <Form className={s.loginForm_inner}>
             <div>
-              <label htmlFor="name">Login</label>
+              <label htmlFor="name">create</label>
               <Field
                 className={s.login}
                 type="text"
@@ -61,7 +61,7 @@ const CreateGame = ({token,setGames,...props}) => {
                 
                   <button type="submit" disabled={loading}>
                 {loading && <span>loading</span>}
-                <span>Login</span>
+                <span>create</span>
               </button>  
                 
               
