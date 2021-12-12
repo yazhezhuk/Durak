@@ -12,7 +12,7 @@ public class RemoveCardIntegrationEvent : BaseIntegrationEvent
 	{
 		_card = card;
 	}
-	
-	public override Task Publish(Hub hub) =>
-		hub.Clients.All.SendAsync(Name, _card);
+
+	public override Task Publish(IHubClients hubClients) =>
+		hubClients.All.SendAsync(Name, _card);
 	}

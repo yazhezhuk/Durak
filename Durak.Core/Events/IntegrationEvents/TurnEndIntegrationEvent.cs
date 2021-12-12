@@ -12,7 +12,7 @@ public class TurnEndIntegrationEvent : BaseIntegrationEvent
 		_game = game;
 	}
 
-	public override Task Publish(Hub hub) =>
-		hub.Clients.All.SendAsync(Name, _game);
+	public override Task Publish(IHubClients hubClients) =>
+		hubClients.All.SendAsync(Name, _game);
 
 }

@@ -22,8 +22,10 @@ public class IntegrationEventPublisher : IIntegrationEventPublisher
 		using(var scope = _serviceScopeFactory.CreateScope())
 		{
 			var gameHub = scope.ServiceProvider.GetRequiredService<GameHub>();
-			integrationEvent.Publish(gameHub);
+			var gameHubContext = scope.ServiceProvider.GetService<IHubContext<GameHub>>();
 
+
+			integrationEvent.Publish(gameHubContext.Clients);
 		}
 
 		return Task.CompletedTask;

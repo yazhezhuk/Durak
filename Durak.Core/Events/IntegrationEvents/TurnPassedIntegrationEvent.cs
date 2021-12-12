@@ -5,8 +5,8 @@ namespace Durak.Core.Events.IntegrationEvents;
 public class TurnPassedIntegrationEvent : BaseIntegrationEvent
 {
 
-	public override Task Publish(Hub hub)
+	public override Task Publish(IHubClients hubClients)
 	{
-		return hub.Clients.Others.SendAsync(Name);
+		return null;
 	}
 }

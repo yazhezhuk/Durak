@@ -6,6 +6,6 @@ public abstract class BaseIntegrationEvent
 {
 	public string Name => GetType().Name;
 
-	public abstract Task Publish(Hub hub);
+	public abstract Task Publish(IHubClients hubClients);
 
 }
