@@ -7,6 +7,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { useEffect, useRef, useState } from "react";
 import { HubConnectionBuilder,HttpTransportType } from "@microsoft/signalr";
+import About from "./components/About/About";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -49,6 +50,7 @@ const App = () => {
           <Route path='/game' element={<GamePlace connection={connection}/>}/>
           <Route path="/profile" element={<GameList isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setToken={setToken}  />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
   );

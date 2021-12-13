@@ -10,9 +10,11 @@ import { clearMessage } from "../../react-redux/ProfileSlices/messageSlice";
 
 const Login = (props) => {
   const [loading, setLoading] = useState(false);
+  const [toAbout, setToAbout] = useState(false)
 
   const { isLoggedIn } = useSelector((state) => state.auth);
   const { message } = useSelector((state) => state.message);
+  
 
   const dispatch = useDispatch();
 
@@ -48,10 +50,18 @@ const Login = (props) => {
   if (isLoggedIn) {
     return <Navigate  to="/profile" />;
   }
+  
+  if (toAbout)  {
+    return <Navigate to='/about' />
+  }
 
   return (
     <div className={s.loginForm}>
-      <h3 className={s.h3}>Login</h3>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+      </style>
+      <p className={s.about} onClick={() => {setToAbout(true)}}>About</p>
+      <h3 className={s.h3}>Login in to <br />your account</h3>
     <div>
         <Formik
         initialValues={initialValues}
@@ -61,24 +71,23 @@ const Login = (props) => {
       >
         <Form className={s.loginForm_inner}>
           <div>
-            <label htmlFor="username">Login</label>
-            <Field
-              className={s.login}
+            {/*<label htmlFor="username">Login</label>*/}
+            <Field className={s.login}
               type="text"
               name="username"
               placeholder={"Enter login"}
             />
-            <ErrorMessage name="username" component="div" />
+            <ErrorMessage className={s.validating} name="username" component="div" />
           </div>
 
           <div>
-            <label htmlFor="password">Password</label>
-            <Field className={s.password} type="password" name="password" placeholder={"Enter password"} />
-            <ErrorMessage name="password" component="div" />
+            {/*<label className={s.password} htmlFor="password">Password</label>*/}
+            <Field className={s.password}  type="password" name="password" placeholder={"Enter password"} />
+            <ErrorMessage className={s.validating} name="password" component="div" />
           </div>
 
-          <div >
-            <button
+          <div className={s.submit} >
+            <button className={s.button}
               type="submit"
 
               disabled={loading}
@@ -87,7 +96,7 @@ const Login = (props) => {
               {loading && (
                 <span >loading</span>
               )}
-              <span>Login</span>
+              <span >Log in</span>
             </button>
           </div>
 

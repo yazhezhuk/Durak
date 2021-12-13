@@ -1,34 +1,86 @@
 .loginForm {
+    text-align: center;
     width: 100%;
     max-width: 350px;
-    height: 250px;
-    background: green;
-    border: 10px solid #78401b;
+    height: 400px;
+    background: white;
+    border-radius: 3px ;
+}
+
+.about {
+    text-align: right;
+    margin: 10px;
+    font-family: 'Open Sans', sans-serif;
+    color: #656565;
+    cursor: pointer;
+}
+
+.about:hover {
+    color: #4f4e4e;
 }
 
 .h3 {
+    margin: 0;
+    padding: 30px 0 ;
     font-size: 21px;
     text-align: center;
     text-transform: uppercase;
+    font-family: 'Open Sans', sans-serif;
+    color: #656565;
+    
 }
 
 .loginForm_inner {
+    display: flex;
+    flex-direction: column;
     font-size: 20px;
-    padding-top: 30px;
+    
 }
 
 .login {
-    margin-left: 33px;
+    padding-left: 10px;
+    font-style: italic;
+    width: 80%;
+    border: 1px solid grey;
+    
 }
 
+.login:focus, .password:focus {
+    background: #e1ecff;    
+}
+
+.password {
+    padding-left: 10px;
+    font-style: italic;
+    width: 80%;
+    border: 1px solid grey;
+
+}
+
+.validating {
+    font-size: 14px;
+    color: red;
+}
+
+
 .submit {
-    width: 100px;
-    height: 50px;
-    font-size: 20px;
+    padding: 25px 0;
+    font-size: 15px;
     text-align: center;
+}
 
-    margin: 20px 0 0 125px;
+.button {
+    width: 85%;
+    height: 30px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: radial-gradient(#1d97d5, #068bce);
+    border: 0;
+    cursor: pointer;
+}
 
-
-
+.button:hover {
+    background: #00b0fc;
 }

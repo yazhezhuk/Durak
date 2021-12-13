@@ -9,8 +9,6 @@ import s from "./CreateGame.module.css";
 const CreateGame = ({setLoading,loading,games,setGames}) => {
 
 
-
-
   const dispatch = useDispatch();
   const initialValues = {
     name: "",
@@ -44,33 +42,29 @@ const CreateGame = ({setLoading,loading,games,setGames}) => {
     
   };
   return (
-    <div className={s.loginForm}>
-      <h3 className={s.h3}>create new game</h3>
+    <div className={s.createGame}>
+      {/*<h3 className={s.createGame_h3}>create new game</h3>*/}
       <div className={s.container}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleLogin}
         >
-          <Form className={s.loginForm_inner}>
-            <div>
-              <label htmlFor="name">create</label>
-              <Field
-                className={s.login}
+          <Form>
+            <div className={s.addGame}>
+              <Field clssName={s.addGame_field}
+                
                 type="text"
                 name="name"
                 placeholder={"Enter login"}
               />
-            </div>
-            <div>
-                
-                  <button type="submit" disabled={loading}>
-                {loading && <span>loading</span>}
+              <button className={s.addGame_button} type="submit" disabled={loading}>
+                {loading && <span>loading...</span>}
                 <span>create</span>
-              </button>  
-                
-              
+              </button>
+              {/*<label htmlFor="name">create</label>*/}
             </div>
+            
           </Form>
         </Formik>
       </div>
