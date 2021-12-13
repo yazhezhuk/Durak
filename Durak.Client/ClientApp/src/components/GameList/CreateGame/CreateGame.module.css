@@ -1,8 +1,21 @@
-.h3 {
-    font-size: 21px;
-    text-align: center;
-    text-transform: uppercase;
+/*.createGame {*/
+/*    margin: 0 auto;*/
+/*    max-width: 350px;*/
+/*    height: 200px;*/
+/*    border-radius: 3px ;*/
+/*    */
+/*    border: 1px solid red;*/
+/*}*/
+
+.addGame {
+    display: flex;
+    justify-content: center;
 }
-.container{
-    background-color:grey;
+
+.addGame_button {
+    margin-left: 10px;
+}
+
+.addGame_field:focus {
+    background: #e1ecff;  ;
 }

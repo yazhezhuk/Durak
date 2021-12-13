@@ -1,0 +1,80 @@
+﻿html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #2b2b2b;
+    font-family: 'Open Sans', sans-serif;
+
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+
+.aboutGame{
+    width: 100%;
+    position: relative;
+
+}
+
+.container_1170 {
+    max-width: 1170px;
+    margin: 0 auto;
+    position: relative;
+}
+
+
+.aboutGame_inner {
+    display: flex;
+
+}
+
+.aboutGame_inner_img {
+    height: 400px;
+    width: auto;
+}
+
+.aboutGame_h1 {
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.aboutGame_inner_p {
+    color: #b3b7c3;
+    font-size: 20px;
+    margin-left: 30px;
+
+}
+
+.paragraph {
+    padding-left: 20px;
+}
+
+.aboutGame_rules {
+    margin: 50px 0 0 0;
+}
+
+.aboutGame_rules_h2 {
+    color: white;
+    text-align: center;
+}
+
+.aboutGame_rules_ul {
+    line-height: 1.5;
+
+    color: #b3b7c3;
+    font-size: 20px;
+}
+
+.button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}
