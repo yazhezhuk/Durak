@@ -1,5 +1,4 @@
 using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels;
 using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Session;
@@ -32,6 +31,6 @@ public class EndTurnEventHandler : BaseEventHandler<EndTurnApplicationEvent>
 
 		gameRepository.Update(notification.Game);
 
-		return EventPublisher.PublishEvent(new TurnEndIntegrationEvent(notification.Game));
+		return Task.CompletedTask;
 	}
 }

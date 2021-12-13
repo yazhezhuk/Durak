@@ -1,12 +1,10 @@
 using System.Reflection;
 using System.Text;
+using Durak.Client.Controllers;
 using Durak.Client.Services;
 using Durak.Core;
 using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.EventHandlers;
 using Durak.Infrastructure.Data;
-using Durak.Core.Events.IntegrationEvents;
-using Durak.Core.GameModels;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Fields;
@@ -47,9 +45,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
 //SignalR
-builder.Services.AddScoped<GameHub>();
-builder.Services.AddSignalR();
-
+builder.Services.AddScoped<GameHubService>();
 //Cors settings
 
 
@@ -61,7 +57,14 @@ builder.Services.AddDbContext<GameContext>(options =>
 	options.UseSqlServer(connectionString: "Server=localhost\\SQLEXPRESS;Initial Catalog=GameDB;Trusted_Connection=True;"
 	),ServiceLifetime.Singleton);
 
-builder.Services.AddIdentity<AppUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 1;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+})
 	.AddEntityFrameworkStores<GameContext>()
 	.AddDefaultTokenProviders();
 builder.Services.AddLogging(options =>
@@ -79,11 +82,10 @@ builder.Services.AddScoped<IRepository<Field>, BaseEfRepository<Field>>();
 builder.Services.AddScoped<IRepository<Game>, BaseEfRepository<Game>>();
 builder.Services.AddScoped<IRepository<Deck>,BaseEfRepository<Deck>>();
 
-builder.Services.AddScoped<IIntegrationEventPublisher, IntegrationEventPublisher>();
 builder.Services.AddScoped<IFieldValidator, FieldValidator>();
 builder.Services.AddScoped<IGameSessionService, GameSessionService>();
 builder.Services.AddScoped<IMoveService, MoveService>();
-
+builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
 
 
@@ -103,15 +105,37 @@ builder.Services.AddAuthentication(options =>
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidateLifetime = true,
-		ValidIssuers = new List<string>{Helper.ApplicationOptions.DEFAULT_HOST,
+		ValidIssuers = new List<string>
+		{
+			Helper.ApplicationOptions.DEFAULT_HOST,
 			" http://localhost:3001"
 		},
-		ValidAudiences = new List<string>{Helper.ApplicationOptions.DEFAULT_HOST,
+		ValidAudiences = new List<string>
+		{
+			Helper.ApplicationOptions.DEFAULT_HOST,
 			" http://localhost:3001"
 		},
 		IssuerSigningKey = new SymmetricSecurityKey(
 			Encoding.UTF8.GetBytes(Helper.ApplicationOptions.DEFAULT_SECRET))
 	};
+	options.Events = new JwtBearerEvents
+	{
+		OnMessageReceived = context =>
+		{
+			var accessToken = context.Request.Query["access_token"];
+
+			// If the request is for our hub...
+			var path = context.HttpContext.Request.Path;
+			if (!string.IsNullOrEmpty(accessToken) &&
+			    (path.StartsWithSegments("/gameHub")))
+			{
+				// Read the token out of the query string
+				context.Token = accessToken;
+			}
+			return Task.CompletedTask;
+		}
+	};
+
 });
 
 builder.Services.AddAuthorization(options =>
@@ -124,6 +148,8 @@ builder.Services.AddAuthorization(options =>
 
 	options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
 });
+builder.Services.AddSignalR();
+
 
 
 var app = builder.Build();
@@ -144,7 +170,6 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
@@ -156,7 +181,7 @@ app.UseEndpoints(endpoints =>
 
 
 app.UseAuthentication();
-app.MapHub<GameHub>("/gameHub");
+app.MapHub<GameHubService>("/gameHub");
 app.UseSpa(spa =>
 {
 	spa.Options.SourcePath = "ClientApp";

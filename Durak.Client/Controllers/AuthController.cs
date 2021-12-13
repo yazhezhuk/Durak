@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Durak.Client.Models;
 using Durak.Core;
-using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Players;
 using Durak.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -22,18 +21,15 @@ public class AuthController : ControllerBase
 {
 	private readonly UserManager<AppUser> _userManager;
 	private readonly IGameSessionRepository _gameSessionRepository;
-	private readonly IIntegrationEventPublisher _eventPublisher;
 	private readonly RoleManager<IdentityRole> _roleManager;
 	private IConfiguration _configuration;
 
 
 	public AuthController(IGameSessionRepository gameSessionRepository,
-		IIntegrationEventPublisher eventPublisher,
 		UserManager<AppUser> userManager,
 		RoleManager<IdentityRole> roleManager)
 	{
 		_gameSessionRepository = gameSessionRepository;
-		_eventPublisher = eventPublisher;
 		_roleManager = roleManager;
 		_userManager = userManager;
 	}
@@ -44,11 +40,17 @@ public class AuthController : ControllerBase
 	{
 		var existingUserModel = await _userManager.FindByNameAsync(loginModel.Username);
 
-			if (existingUserModel == null)
-			return Problem(
-			"Boy next door;"
-		);
+		if (existingUserModel == null)
+		{
+			var user = new AppUser { UserName = loginModel.Username};
 
+			var result = await _userManager.CreateAsync(user, loginModel.Password);
+				if (!result.Succeeded)
+					return BadRequest();
+				existingUserModel = user;
+		}
+
+		_userManager.AddClaimAsync(existingUserModel, new Claim(ClaimTypes.Name, existingUserModel.UserName));
 		var passwordCheckResult = await _userManager.CheckPasswordAsync(existingUserModel, loginModel.Password);
 
 		if (!passwordCheckResult)
@@ -69,7 +71,8 @@ public class AuthController : ControllerBase
 
 		var claims = new[]
 		{
-			new Claim(JwtRegisteredClaimNames.Sub, appUser.UserName)
+			new Claim(JwtRegisteredClaimNames.Sub, appUser.UserName),
+			new Claim(ClaimTypes.Name, appUser.UserName)
 		};
 
 

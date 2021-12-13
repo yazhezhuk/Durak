@@ -1,5 +1,4 @@
 using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels;
 using Durak.Core.GameModels.Players;
 using Durak.Core.Interfaces;
@@ -25,7 +24,7 @@ public class TurnPassedEventHandler : BaseEventHandler<TurnPassedEvent>
 
 		Logger.LogInformation("User {} successfully passed turn",
 			_playerRepository.Get((int)notification.ActionClaimantId).AppIdentity.UserName);
-		return EventPublisher.PublishEvent(new TurnPassedIntegrationEvent());
+		return Task.CompletedTask;
 	}
 
 

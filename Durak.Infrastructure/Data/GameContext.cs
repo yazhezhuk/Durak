@@ -74,28 +74,6 @@ public class GameContext : IdentityDbContext
 		//	modelBuilder.Entity<Card>().HasData(Helper.Game.InitialCardSet);
 
 		modelBuilder.Entity<AppUser>().Metadata.SetTableName("AppUsers");
-		var appUser = new AppUser {
-			Id = Guid.NewGuid().ToString(),
-			Email = "zhukovets@gmail.com",
-			EmailConfirmed = true,
-			UserName = "vitalich",
-			NormalizedUserName = "VITALICH"
-		};
-
-		var appUser1 = new AppUser {
-			Id = Guid.NewGuid().ToString(),
-			Email = "nazarius@gmail.com",
-			EmailConfirmed = true,
-			UserName = "nazarix",
-			NormalizedUserName = "NAZARIX"
-		};
-
-		var ph = new PasswordHasher<AppUser>();
-		appUser.PasswordHash = ph.HashPassword(appUser, "bruh");
-
-		appUser1.PasswordHash = ph.HashPassword(appUser, "p");
-
-		modelBuilder.Entity<AppUser>().HasData(appUser,appUser1);
 
 	}
 

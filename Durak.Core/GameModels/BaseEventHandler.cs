@@ -10,7 +10,6 @@ namespace Durak.Core.GameModels;
 public abstract class BaseEventHandler<T> : INotificationHandler<T> where T : INotification
 {
 	protected readonly ILogger? Logger;
-	protected readonly IIntegrationEventPublisher? EventPublisher;
 	protected readonly IServiceProvider _serviceProvider;
 
 	protected BaseEventHandler(IServiceProvider serviceProvider)
@@ -19,7 +18,6 @@ public abstract class BaseEventHandler<T> : INotificationHandler<T> where T : IN
 		using var scope = serviceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		Logger = scopeServiceProvider.GetService<ILogger<BaseEventHandler<T>>>();
-		EventPublisher = scopeServiceProvider.GetService<IIntegrationEventPublisher>();
 	}
 
 	public abstract Task Handle(T notification, CancellationToken cancellationToken);

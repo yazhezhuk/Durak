@@ -3,6 +3,7 @@ using Durak.Core.GameModels;
 using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
 using Durak.Core.Services;
+using Durak.Infrastructure.Integration;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,9 @@ public class StartGameEventHandler : BaseEventHandler<StartGameApplicationEvent>
 	{
 		using var scope = _serviceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
-		var gameRepository = scopeServiceProvider.GetService<IRepository<Game>>();
+		var gameRepository = scopeServiceProvider.GetService<IRepository<Game>>() ?? throw new ApplicationException();
+		var gameHubService = scopeServiceProvider.GetService<GameHubService>() ?? throw new ApplicationException();
+
 		
 		Logger.LogInformation("{}, Game",notification.Game.Name );
 		notification.Game.AttackPlayer.CanMove = true;
@@ -31,8 +34,9 @@ public class StartGameEventHandler : BaseEventHandler<StartGameApplicationEvent>
 		notification.Game.GameState = GameState.Ongoing;
 		gameRepository.Update(notification.Game);
 
+		gameHubService.StartGameForUser(notification.Game.AttackPlayer.AppIdentity,notification.Game);
+		gameHubService.StartGameForUser(notification.Game.DefencePlayer.AppIdentity, notification.Game);
 
-		return EventPublisher.PublishEvent(
-			new IntegrationEvents.StartGameIntegrationEvent(notification.Game));
+		return Task.CompletedTask;
 	}
 }

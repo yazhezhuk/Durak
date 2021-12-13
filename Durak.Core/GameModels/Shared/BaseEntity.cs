@@ -1,6 +1,4 @@
-using Durak.Core.Events;
 using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
 using Newtonsoft.Json;
 
 namespace Durak.Core.GameModels.Shared;

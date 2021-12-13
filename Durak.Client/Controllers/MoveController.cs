@@ -18,7 +18,6 @@ namespace Durak.Client.Controllers;
 [Route("api/[controller]")]
 public class MoveController : ControllerBase
 {
-	private readonly IIntegrationEventPublisher _eventPublisher;
 	private readonly IGameSessionService _gameSessionService;
 	private readonly UserManager<AppUser> _userManager;
 	private readonly IGameSessionRepository _gameSessionRepository;
@@ -32,13 +31,12 @@ public class MoveController : ControllerBase
 		IMoveService moveService,
 		IRepository<Game> gameRepository,
 		IGameSessionRepository gameSessionRepository,
-		IGameSessionService gameSessionService, UserManager<AppUser> userManager, IIntegrationEventPublisher eventPublisher)
+		IGameSessionService gameSessionService, UserManager<AppUser> userManager)
 	{
 		_moveService = moveService;
 		_gameSessionRepository = gameSessionRepository;
 		_gameSessionService = gameSessionService;
 		_userManager = userManager;
-		_eventPublisher = eventPublisher;
 
 
 	}

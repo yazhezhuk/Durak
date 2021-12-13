@@ -1,31 +1,19 @@
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Serialization;
-using Durak.Core.Events;
-using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
-using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Durak.Core.GameModels.Cards;
 [Owned]
-public record Card : IJsonSerializable, IRootEntity
+public record Card(Lear Lear, Rank Rank) : IJsonSerializable, IRootEntity
 {
-	public Lear Lear { get; set; }
-	public Rank Rank { get; set; }
+	public Lear Lear { get; set; } = Lear;
+	public Rank Rank { get; set; } = Rank;
 
 	[JsonConstructorAttribute]
 	public Card(string lear, string rank) :
 		this(Enum.Parse<Lear>(lear),Enum.Parse<Rank>(rank))
 	{
 
-	}
-
-	public Card(Lear lear, Rank rank)
-	{
-		Lear = lear;
-		Rank = rank;
 	}
 
 	public bool TryBeatAnother(Card enemyCard, bool isYourCardIsPrime, bool isEnemyCardPrime)

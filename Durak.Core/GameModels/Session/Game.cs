@@ -1,5 +1,6 @@
 using Durak.Core.Events;
 using Durak.Core.Events.ApplicationEvents;
+using Durak.Core.Events.Integration.Models;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Fields;
@@ -78,4 +79,20 @@ public class Game : BaseEntity<int>, IRootEntity
 	{
 		(AttackPlayer.CurrentRole, DefencePlayer.CurrentRole) = (DefencePlayer.CurrentRole, AttackPlayer.CurrentRole);
 	}
+
+	public GameViewModel ToViewModel(AppUser ofUser) =>
+		new GameViewModel()
+		{
+			GameId = Id,
+			EnemyCardCount = Players.FirstOrDefault(player => player.AppIdentity.UserName != ofUser.UserName)
+				.PlayerHand
+				.Cards
+				.Count,
+			PlayerCards = Players.FirstOrDefault(player => player.AppIdentity.UserName == ofUser.UserName)
+				.PlayerHand
+				.Cards
+				.Select(playedCard => playedCard.Card)
+				.ToList(),
+			TrumpLear = TrumpLear
+		};
 }

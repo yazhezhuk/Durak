@@ -1,4 +1,3 @@
-using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Players;
 

@@ -1,8 +1,5 @@
-using Durak.Core.Events;
 using Durak.Core.Events.ApplicationEvents;
-using Durak.Core.Events.IntegrationEvents;
 using Durak.Core.GameModels.Cards;
-using Durak.Core.GameModels.CardSets;
 using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Shared;
 using Durak.Core.Interfaces;
