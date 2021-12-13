@@ -11,12 +11,11 @@ export const createGame = createAsyncThunk(
     try {
       const response = await fetch(API_URL + "create", {
         method: "POST",
+        mode: 'cors',
         headers: {
-          "Content-Type": "application/json",
-          'Accept': "*/*",
-          "Accept-Encoding": "gzip, deflate, br",
-          "Cache-Control": "no-cache",
-          'Connection': "keep-alive",
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
           'Authorization': `Bearer ${user.token}`,
         },
         body: JSON.stringify({ Name: name }),
@@ -40,12 +39,12 @@ export const connectGame = createAsyncThunk(
     try {
       const response = await fetch(API_URL + "connect", {
         method: "POST",
+        mode: 'cors',
         headers: {
-          "Content-Type": "application/json",
-          'Accept': "*/*",
-          "Accept-Encoding": "gzip, deflate, br",
-          "Cache-Control": "no-cache",
-          'Connection': "keep-alive",
+          'Content-Type': 'application/json',
+
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
           'Authorization': `Bearer ${user.token}`,
         },
         body: JSON.stringify({ Name: name }),
@@ -69,12 +68,12 @@ export const getAllGames = createAsyncThunk("game/getAll", async (thunkAPI) => {
   try {
     const response = await fetch(API_URL + "all", {
       method: "GET",
+      mode: 'cors',
       headers: {
-        "Content-Type": "application/json",
-        'Accept': "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Cache-Control": "no-cache",
-        'Connection': "keep-alive",
+        'Content-Type': 'application/json',
+
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
         'Authorization': `Bearer ${user.token}`,
       },
     });

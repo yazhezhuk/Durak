@@ -12,9 +12,11 @@ public class Player : BaseEntity<int>, IRootEntity
 	public bool CanMove { get; set; }
 	public Role CurrentRole { get; set; }
 	public string AppUserId { get; set; }
+	[JsonIgnore]
 	public AppUser AppIdentity { get; set; }
 	public int GameId { get; set; }
 
+	[JsonIgnore]
 	public Game Game { get; set; }
 
 	public Player(int gameId, string appUserId)

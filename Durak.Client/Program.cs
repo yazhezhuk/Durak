@@ -28,6 +28,12 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowAllOrigins",
+		builder => builder.AllowAnyOrigin().AllowAnyHeader());
+});
+
 builder.Services.AddControllers()
 	.AddNewtonsoftJson(x =>
 		x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -43,16 +49,7 @@ builder.Services.AddScoped<GameHub>();
 builder.Services.AddSignalR();
 
 //Cors settings
-builder.Services.AddCors(options =>
-{
-	options.AddPolicy("ClientPermission", policy =>
-	{
-		policy.AllowAnyHeader()
-			.AllowAnyMethod()
-			.WithOrigins(Helper.ApplicationOptions.DEFAULT_HOST,"http://localhost:3001")
-			.AllowCredentials();
-	});
-});
+
 
 
 //Logging mis
@@ -104,8 +101,12 @@ builder.Services.AddAuthentication(options =>
 		ValidateIssuer = true,
 		ValidateAudience = true,
 		ValidateLifetime = true,
-		ValidIssuer = Helper.ApplicationOptions.DEFAULT_HOST + ";" + " http://localhost:3001",
-		ValidAudience = Helper.ApplicationOptions.DEFAULT_HOST + ";" + " http://localhost:3001",
+		ValidIssuers = new List<string>{Helper.ApplicationOptions.DEFAULT_HOST,
+			" http://localhost:3001"
+		},
+		ValidAudiences = new List<string>{Helper.ApplicationOptions.DEFAULT_HOST,
+			" http://localhost:3001"
+		},
 		IssuerSigningKey = new SymmetricSecurityKey(
 			Encoding.UTF8.GetBytes(Helper.ApplicationOptions.DEFAULT_SECRET))
 	};
@@ -124,6 +125,7 @@ builder.Services.AddAuthorization(options =>
 
 
 var app = builder.Build();
+app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 
@@ -150,7 +152,7 @@ app.UseEndpoints(endpoints =>
 		pattern: "{controller}/{action}/{id?}");
 });
 
-app.UseCors("ClientPermission");
+
 app.UseAuthentication();
 app.MapHub<GameHub>("/gameHub");
 app.UseSpa(spa =>

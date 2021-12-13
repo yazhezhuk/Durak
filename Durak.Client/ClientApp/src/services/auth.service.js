@@ -6,13 +6,11 @@ const  login  =  async (username, password) => {
 
     const response = await fetch(API_URL, {
         method: 'POST',
+        mode: 'cors',
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': '*/*',
+            'Content-Type': 'text/plain',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Cache-Control': 'no-cache',
             'Connection': 'keep-alive'
-
         },
         body: JSON.stringify({Username: username, Password: password})
     }).catch(error => {

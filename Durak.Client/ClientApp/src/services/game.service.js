@@ -6,13 +6,13 @@ const  connectGame  =  async (name,token) => {
 
     const response = await fetch(API_URL + 'connect', {
         method: 'POST',
+        mode: 'cors',
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': '*/*',
+            'Content-Type': 'text/plain',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Cache-Control': 'no-cache',
             'Connection': 'keep-alive',
             'Authorization': `Bearer ${token}`
+
         },
         body: JSON.stringify({Name:name})
     }).catch(error => {
@@ -26,12 +26,11 @@ const createGame  = async (name,token) => {
 console.log(token)
     const response = await fetch(API_URL + 'create', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'text/plain',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
             'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({Name:name})
