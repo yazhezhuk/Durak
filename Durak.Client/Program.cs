@@ -155,6 +155,10 @@ builder.Services.AddAuthorization(options =>
 	options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
 });
 builder.Services.AddSignalR();
+builder.Services.AddSpaStaticFiles(configuration =>
+{
+	configuration.RootPath = "ClientApp/build";
+});
 
 
 var app = builder.Build();

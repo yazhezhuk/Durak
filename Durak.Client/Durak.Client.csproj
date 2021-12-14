@@ -49,7 +49,6 @@
         </Exec>
         <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build&#xD;&#xA;        and run this project. To continue, please install Node.js from https://nodejs.org/,&#xD;&#xA;        and then restart your command prompt or IDE." />
         <Message Importance="high" Text="Restoring dependencies using 'npm'.&#xD;&#xA;        This may take several minutes..." />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
     </Target>
 
     <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
