@@ -5,12 +5,12 @@ namespace Durak.Core.Events.ApplicationEvents;
 
 public class BeatOpponentCardApplicationEvent : BaseApplicationEvent
 {
-	private Card _sourceCard;
-	private Card _targetCard;
+	public Card SourceCard { get; set; }
+	public Card TargetCard { get; set; }
 
-	public BeatOpponentCardApplicationEvent(Player player,Card surceCard, Card targerCard) : base(player)
+	public BeatOpponentCardApplicationEvent(int player,Card surceCard, Card targerCard) : base(player)
 	{
-		_sourceCard = surceCard;
-		_targetCard = targerCard;
+		SourceCard = surceCard;
+		TargetCard = targerCard;
 	}
 }

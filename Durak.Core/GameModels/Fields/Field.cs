@@ -50,7 +50,8 @@ public class Field : BaseEntity<int>, IRootEntity
 	public void PlayCardToDefend(GameCard playerCard,GameCard enemyCard)
 	{
 		PlayedCards.Add(playerCard);
-		//Events.Add(new CardDefeatedIntegrationEvent(playerCard,enemyCard));
+		Events.Add(new BeatOpponentCardApplicationEvent(playerCard.PlayerId,
+			playerCard.Card,enemyCard.Card));
 	}
 
 }

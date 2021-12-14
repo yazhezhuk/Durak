@@ -1,23 +1,27 @@
 using System.Linq;
 using Durak.Core;
 using Durak.Core.Events;
+using Durak.Core.Events.EventHandlers;
 using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Fields;
 using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
+using MediatR;
 
 namespace Durak.Client.Services;
 
 	public class MoveService : IMoveService
 	{
-		public MoveService(IRepository<GameCard> gameCardRepository,IFieldValidator fieldValidator,IRepository<Field> field)
+		public MoveService(IMediator mediator,IRepository<GameCard> gameCardRepository,IFieldValidator fieldValidator,IRepository<Field> field)
 		{
+			_mediator = mediator;
 			_fieldValidator = fieldValidator;
 			_fieldRepository = field;
 		}
 
 		private readonly IRepository<Field> _fieldRepository;
+		private readonly IMediator _mediator;
 		private readonly IFieldValidator _fieldValidator;
 
 
@@ -53,13 +57,18 @@ namespace Durak.Client.Services;
 
 		public void DefendFromCard(Game game, Card playerCard, Card enemyCard)
 		{
-			if (!game.ValidateUserCanMove(game.CurrentPlayer.AppIdentity, Role.Defender))
-				throw new InvalidOperationException("Please wait your turn!");
-
 			var isYourCardIsTrump = playerCard.Lear == game.TrumpLear;
 			var isEnemyCardIsTrump = enemyCard.Lear == game.TrumpLear;
 
-			if (!playerCard.TryBeatAnother(enemyCard, isYourCardIsTrump, isEnemyCardIsTrump)) return;
+			if (!playerCard.TryBeatAnother(enemyCard,
+				    isYourCardIsTrump,
+				    isEnemyCardIsTrump))
+			{
+				_mediator.Publish(new InvalidOperationEvent(game.CurrentPlayer,
+					"Cannot defend with this card"));
+				return;
+			}
+
 			var gameCard = game.CurrentPlayer.PlayerHand.DrawCard(playerCard);
 			var enemyGameCard = game.Field.PlayedCards.First(card => card.Card == enemyCard);
 			game.Field.PlayCardToDefend(gameCard, enemyGameCard);

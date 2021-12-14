@@ -62,11 +62,12 @@ public class Game : BaseEntity<int>, IRootEntity
 
 	public void PassMove()
 	{
+		var currentPlayer = CurrentPlayer;
 		var playerToPass = Players.FirstOrDefault(user => !user.CanMove);
-		CurrentPlayer.CanMove = false;
+		currentPlayer.CanMove = false;
 		playerToPass.CanMove = true;
 
-		Events.Add(new TurnPassedEvent(CurrentPlayer,playerToPass));
+		Events.Add(new TurnPassedEvent(currentPlayer,playerToPass));
 	}
 
 	public void HandsUp()

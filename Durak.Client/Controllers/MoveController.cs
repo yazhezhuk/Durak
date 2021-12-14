@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+#pragma warning disable CS8602
 
 namespace Durak.Client.Controllers;
 
@@ -49,51 +50,52 @@ public class MoveController : ControllerBase
 	[HttpPost("attack")]
 	public IActionResult Attack([FromBody] AttackModel attackModel)
 	{
-		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
+		AppUser currentUser = ResolveCurrentUserFromClaims();
+		Game game = _gameSessionRepository.Get(attackModel.GameId).Game;
 
-		var gameSession = _gameSessionRepository.Get(attackModel.GameId);
-		var game = gameSession.Game;
+		Player userWithGameIdentity = currentUser.AsGameIdentity(game.Id);
 
 		if (!game.ValidateUserCanMove(currentUser, Role.Attacker))
 		{
-			//_eventPublisher.PublishEvent(new InvalidActionIntegrationEvent());
+			_mediator.Publish(
+				new InvalidOperationEvent(userWithGameIdentity,
+					"You unable to move yet."));
 			return Problem("invalid action!");
 		}
 
 		_moveService.PlaceCard(game,attackModel.Card,game.AttackPlayer);
 
-		return Ok(new { game });
+		return Ok();
 	}
 
 	[HttpPost("defend")]
 	public IActionResult Defend([FromBody] DefendModel defendModel)
 	{
+		AppUser currentUser = ResolveCurrentUserFromClaims();
+		Game? game = _gameRepository.Get(defendModel.GameId);
 
-		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
-
-		var gameSession = _gameSessionRepository.GetByUserName(currentUser.UserName);
-		var game = gameSession.Game;
-
+		Player userWithGameIdentity = currentUser.AsGameIdentity(game.Id);
 
 		if (!game.ValidateUserCanMove(currentUser, Role.Defender))
 		{
-			//_eventPublisher.PublishEvent(new InvalidActionIntegrationEvent());
+			_mediator.Publish(
+				new InvalidOperationEvent(userWithGameIdentity,
+					"You unable to move yet."));
 			return Problem("invalid action!");
 		}
 
 		_moveService.DefendFromCard(game,defendModel.PlayerCard,defendModel.EnemyCard);
 
-		return Ok(new { game });
+		return Ok();
 	}
 
 	[HttpPost("pass")]
 	public IActionResult Pass([FromQuery]int gameId)
 	{
-		var currentUser = ResolveCurrentUserFromClaims();
-		var currentGame = _gameRepository.Get(gameId);
-		var userWithGameIdentity = currentUser.AsGameIdentity(currentGame.Id);
+		AppUser currentUser = ResolveCurrentUserFromClaims();
+		Game? currentGame = _gameRepository.Get(gameId);
+
+		Player userWithGameIdentity = currentUser.AsGameIdentity(currentGame.Id);
 
 		if (!currentGame.ValidateUserCanMove(currentUser, Role.Both))
 		{
@@ -104,6 +106,7 @@ public class MoveController : ControllerBase
 		}
 
 		currentGame.PassMove();
+		_gameRepository.Update(currentGame);
 
 		return Ok();
 	}

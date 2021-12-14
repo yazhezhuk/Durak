@@ -10,5 +10,5 @@ public class DefendModel
 	[Required(ErrorMessage = "Card is required")]
 	public Card EnemyCard { get; set; }
 	[Required(ErrorMessage = "Game session Id is required")]
-	public string GameName { get; set; }
+	public int GameId { get; set; }
 }
