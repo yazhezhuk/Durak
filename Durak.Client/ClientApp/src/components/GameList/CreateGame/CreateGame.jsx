@@ -52,14 +52,14 @@ const CreateGame = ({setLoading,loading,games,setGames}) => {
         >
           <Form>
             <div className={s.addGame}>
-              <Field clssName={s.addGame_field}
+              <Field className={s.addGame_field}
                 
                 type="text"
                 name="name"
                 placeholder={"Enter login"}
               />
               <button className={s.addGame_button} type="submit" disabled={loading}>
-                {loading && <span>loading...</span>}
+               
                 <span>create</span>
               </button>
               {/*<label htmlFor="name">create</label>*/}

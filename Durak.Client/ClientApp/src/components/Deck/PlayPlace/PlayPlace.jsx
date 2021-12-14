@@ -10,9 +10,9 @@ const PlayPlace = ({pairs}) => {
             
             {pairs.map(pair => (
                 <div className={s.cardPair}>
-                    {pair.map(card => (
-                        <div className={s.card}>
-                        <CardOpen rank={card.rank} suit={card.suit}  /> 
+                    {pair.map((card, index) => (
+                        <div className={s.card} key={index}>
+                        <CardOpen rank={card.rank} suit={card.lear}  /> 
                         </div> 
                     ) )}
                 

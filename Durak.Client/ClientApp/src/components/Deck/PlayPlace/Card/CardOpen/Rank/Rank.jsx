@@ -1,24 +1,23 @@
 import React from "react";
-import s from './Rank.module.css'
+import s from "./Rank.module.css";
 import Suit from "../Suit/Suit";
+import { RankFactory } from "../../../../../../scripts/enums";
 
-const Rank = ({suit,rank}) => {
+const Rank = ({ suit, rank }) => {
   
-    return (
-        <div className={s.rank}>
-            <div className={s.rank_high}>
-               {rank}
-            </div>
+    let parsedRank = '';
 
-            <Suit  suit={suit}/>
+  (rank === "") ? parsedRank = '' : (parsedRank = RankFactory(rank));
+  
+  return (
+    <div className={s.rank}>
+      <div className={s.rank_high}>{parsedRank.slice(1)  }</div>
 
-            <div className={s.rank_low}>
-            {rank}
-            </div>
-        </div>
+      <Suit suit={suit} />
 
+      <div className={s.rank_low}>{parsedRank.slice(1) }</div>
+    </div>
+  );
+};
 
-    )
-}
-
-export default Rank
+export default Rank;

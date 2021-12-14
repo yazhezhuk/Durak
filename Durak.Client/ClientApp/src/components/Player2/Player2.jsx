@@ -7,9 +7,9 @@ const Player2 = ({cards,onCardClick}) => {
     return (
         <div className={s.player2}>
             
-            {cards.map((card) => (
-                <div className={s.card} key={card.id}>
-                <CardOpen rank={card.rank} suit={card.suit} onCardClick={onCardClick}/>
+            {cards.map((card,index) => (
+                <div className={s.card} key={index} onClick={() => {onCardClick({lear: card.lear, rank: card.rank })}}>
+                <CardOpen rank={card.rank} suit={card.lear} />
                     
 
                 </div>

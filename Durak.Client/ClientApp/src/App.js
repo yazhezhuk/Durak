@@ -10,11 +10,11 @@ import { useEffect, useRef, useState } from "react";
 import { HubConnectionBuilder,HttpTransportType } from "@microsoft/signalr";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)//хз чи воно тут треба
   const [connection, setConnection] = useState(null);
 
-
-
+ const [gameStarted, setGameStarted] = useState(false)
+    const [game, setGame] = useState(null)
     useEffect(() => {
         if (user) {
             const newConnection = new HubConnectionBuilder()
@@ -33,8 +33,12 @@ const App = () => {
             connection.start()
                 .then(() => {console.log('Connection started!')
                     if(connection)
-                        connection.on('StartGameIntegrationEvent', game => {
+                        connection.on('GameStarted', game => {
+                            localStorage.setItem('currentGame',game)
                             console.log(game)
+                            setGameStarted(true)
+                            setGame(game)
+
                         }
                         )})
                 .catch(err => console.log('Error while establishing connection :('  ));
@@ -46,7 +50,7 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route exact path="/" element={<Navigate to='/login' />} />
-          <Route path='/game' element={<GamePlace connection={connection}/>}/>
+          <Route path='/game' element={<GamePlace connection={connection} game={game} gameStarted={gameStarted} />}/>
           <Route path="/profile" element={<GameList isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}  />} />
         </Routes>

@@ -4,13 +4,13 @@ import BunchCards from "./BunchCards/BunchCards";
 import Trump from "./Trump/Trump";
 
 
-const Deck = ({deck}) => {
+const Deck = ({trumpLear}) => {
 
     return (
         <div className={s.deck}>
            
-            <BunchCards deckSize={deck.length - 13}/>
-            <Trump trump={deck[0]} /> 
+            <BunchCards deckSize={24}/>
+            <Trump trumpLear={trumpLear} /> 
 
         </div>
     )

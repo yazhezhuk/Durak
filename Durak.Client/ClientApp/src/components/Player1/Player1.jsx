@@ -5,7 +5,8 @@ import CardClose from "../Deck/PlayPlace/Card/CardClose";
 const Player1 = ({opponentCards}) => {
     return (
         <div className={s.player1}>
-        {opponentCards.map((card, indx) => (
+
+        {new Array(opponentCards).fill(1).map((card, indx) => (
             <div className={s.card} key={indx}>
             <CardClose  />
             </div>

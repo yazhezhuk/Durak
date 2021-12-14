@@ -10,13 +10,13 @@ const Suit = ({suit}) => {
     const getSuit = (suit) =>{
        
         switch(suit){
-            case 'diamonds':
-                return Diamonds
-            case 'spades':
+            case 0:
                 return Spades
-            case "hearts":
+            case 1:
+                return Diamonds
+            case 2:
                 return Hearts
-            case 'clubs':
+            case 3:
                 return Clubs
             default:
                 return 
