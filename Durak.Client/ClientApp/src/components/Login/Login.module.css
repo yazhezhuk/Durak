@@ -38,6 +38,7 @@
 }
 
 .login {
+    font-size: 16px;
     padding-left: 10px;
     font-style: italic;
     width: 80%;
@@ -49,7 +50,10 @@
     background: #e1ecff;    
 }
 
+
 .password {
+    margin-top: 10px;
+    font-size: 16px;
     padding-left: 10px;
     font-style: italic;
     width: 80%;
