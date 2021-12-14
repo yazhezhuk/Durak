@@ -4,6 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <SpaRoot>ClientApp\</SpaRoot>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,16 +25,6 @@
         <Content Include="ClientApp\package.json" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-        <None Remove="obj\**" />
-        <Content Remove="obj\**" />
-        <None Remove=".config\**" />
-        <Content Remove=".config\**" />
-        <None Remove="ClientApp\node_modules\**" />
-        <Content Remove="ClientApp\node_modules\**" />
-        <None Remove="ClientApp\src\Utils\**" />
-        <Content Remove="ClientApp\src\Utils\**" />
-        <None Remove="bin\**" />
-        <Content Remove="bin\**" />
     </ItemGroup>
     <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
         <EnvironmentName>Development</EnvironmentName>
@@ -54,9 +45,8 @@
     <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
         <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-        <!--<Exec WorkingDirectory="$(SpaRoot)" Command="yarn build:iis" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="yarn build:iis" />
 
-        <!- Include the newly-built files in the publish output -->
         <ItemGroup>
             <DistFiles Include="$(SpaRoot)build\**" />
             <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">

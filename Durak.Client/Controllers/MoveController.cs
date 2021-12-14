@@ -53,6 +53,7 @@ public class MoveController : ControllerBase
 		AppUser currentUser = ResolveCurrentUserFromClaims();
 		Game game = _gameSessionRepository.Get(attackModel.GameId).Game;
 
+
 		Player userWithGameIdentity = currentUser.AsGameIdentity(game.Id);
 
 		if (!game.ValidateUserCanMove(currentUser, Role.Attacker))
