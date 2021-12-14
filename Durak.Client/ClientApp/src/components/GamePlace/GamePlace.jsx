@@ -1,18 +1,18 @@
-import React, {useEffect, useMemo, useState,} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import s from "./GamePlace.module.css";
 import Player2 from "../Player2/Player2";
 import Deck from "../Deck/Deck";
 import Player1 from "../Player1/Player1";
 import Button from "./Button/Button";
 import PlayPlace from "../Deck/PlayPlace/PlayPlace";
-import {useDispatch, useSelector} from "react-redux";
-import {Attack} from "../../react-redux/gameSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Attack, PassTurn } from "../../react-redux/gameSlice";
 
-const GamePlace = ({ connection, game, gameStarted }) => {
+const GamePlace = ({ connection, game, gameStarted,setGame }) => {
   const { cards } = useSelector((state) => state.deck);
   const player1Hand = cards.slice(7, 13);
   const player2Hand = cards.slice(1, 7);
-  const [attacker, setAttacker] = useState(null);
+  const [attacker, setAttacker] = useState(true);
   const [deck, setDeck] = useState([{ rank: "R6", suit: "Diamonds" }]);
   const [trumpLear, setTrumpLear] = useState(null);
   const [opponentHandCount, setOpponentHandCount] = useState(0);
@@ -22,53 +22,71 @@ const GamePlace = ({ connection, game, gameStarted }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    //const loadedGame = JSON.parse(localStorage.getItem("currentGame"));
-
+    console.clear()
+    const loadedGame = localStorage.getItem("currentGame");
+    console.log(loadedGame)
     if (gameStarted) {
       updateGameState(game);
     }
   }, []);
-  const handleCardClick = useMemo( () =>
-    (card) => {
-      dispatch(Attack({ card, gameId: game.gameId }))
-    }, [dispatch])
+  const handleCardClick = useMemo(
+    () => (card) => {
+      dispatch(Attack({ card, gameId: game.gameId }));
+    },
+    [dispatch]
+  );
+
+  const [canShowTakeButton, setCanShowTakeButton] = useState(false);
+  const [canShowPassMoveButton, SetCanShowPassMoveButton] = useState(true);
+
+  const handleTakeCardsClick = () => {
+    setCanShowTakeButton(false);
+    SetCanShowPassMoveButton(true);
+  };
+  const handlePassClick = () => {
+    dispatch(PassTurn({ gameId: game.gameId }));
+    SetCanShowPassMoveButton(true);
+  };
 
   useEffect(() => {
     //const loadedGame = JSON.parse(localStorage.getItem("currentGame"));
 
     if (gameStarted) {
       if (connection) {
+        
         connection.on("CardAddedToField", (card) => {
-          console.log('Карта гроші 1 ствол: ',card)
-          setOpenedCards((oldArr) => [...oldArr, card])
+          console.log("Карта гроші 1 ствол: ", card);
+          setOpenedCards((oldArr) => [...oldArr, card]);
         });
         connection.on("CardRemovedFromHand", (card) => {
-          console.log('Карта гроші мінус ствол: ',card)
-          setPlayerHand((old) =>
-          {
-            const index = old.indexOf(card);
-            console.log('Нашов: ',card, index)
+          console.log("Карта гроші мінус ствол: ", card);
+          setPlayerHand((old) => {
 
-            return old.filter(c => (c.lear !== card.lear) || (c.rank !== card.rank))
-          })
+            return old.filter(
+              (c) => c.lear !== card.lear || c.rank !== card.rank
+            );
+          });
         });
         connection.on("MovePassedTo", () => {
-          console.log('Chel, mozhesh hodit: ')
+          console.log("Chel, mozhesh hodit: ");
         });
         connection.on("MovePassedFrom", () => {
-          console.log('Chel, hod zavershen: ')
+          console.log("Chel, hod zavershen: ");
         });
 
         connection.on("InvalidActionOccured", (error) => {
-          console.log('Chel, error: ', error)
+          console.log("Chel, error: ", error);
         });
-
+        return () => {
+          connection.off("CardAddedToField");
+          connection.off("CardRemovedFromHand");
+          connection.off("MovePassedTo");
+          connection.off("MovePassedFrom");
+          connection.off("InvalidActionOccured");
+        };
       }
     }
-  }, [connection]);
-
-  const [canShowTakeButton, setCanShowTakeButton] = useState(true);
-  const [canShowHangUpButton, SetCanShowHangUpButton] = useState(false);
+  }, [connection, gameStarted]);
 
   const updateGameState = (game) => {
     setPlayerHand([...game.playerCards]);
@@ -76,23 +94,12 @@ const GamePlace = ({ connection, game, gameStarted }) => {
     setTrumpLear(game.trumpLear);
   };
 
-  const handleTakeCardsClick = () => {
-    setCanShowTakeButton(false);
-    SetCanShowHangUpButton(true);
-  };
-  const handleHangUpClick = () => {
-    setCanShowTakeButton(true);
-    SetCanShowHangUpButton(false);
-  };
-
-  
-
   const pairCards = useMemo(() => {
     console.log(openedCards);
     return openedCards.reduce((acc, card) => {
       const len = acc.length - 1;
 
-      if (!acc[len] || acc[len].length === 2) {
+      if ((!acc[len] || acc[len].length === 2) && attacker) {
         acc.push([card]);
       } else {
         acc[len].push(card);
@@ -100,7 +107,7 @@ const GamePlace = ({ connection, game, gameStarted }) => {
 
       return acc;
     }, []);
-  }, [openedCards]);
+  }, [attacker, openedCards]);
 
   return (
     <div className={s.gamePlace}>
@@ -115,8 +122,8 @@ const GamePlace = ({ connection, game, gameStarted }) => {
             {canShowTakeButton && (
               <Button label="Take it!" onClick={handleTakeCardsClick} />
             )}
-            {canShowHangUpButton && (
-              <Button label="Hand up!" onClick={handleHangUpClick} />
+            {canShowPassMoveButton && (
+              <Button label="Pass move!" onClick={handlePassClick} />
             )}
           </div>
           <Player2 cards={playerHand} onCardClick={handleCardClick} />

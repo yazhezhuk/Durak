@@ -22,14 +22,15 @@ export const createGame = createAsyncThunk(
         body: JSON.stringify({ Name: name }),
       });
       let data = await response.json();
-      console.log("response", data);
+     
       if (response.status === 200) {
+        console.log("Create game response:", data);
         return { game: data };
       } else {
         return thunkAPI.rejectWithValue(data);
       }
     } catch (e) {
-      console.log("Error", e.response.data);
+      console.log("Error. game not created", e.response.data);
       thunkAPI.rejectWithValue(e.response.data);
     }
   }
@@ -60,7 +61,7 @@ export const connectGame = createAsyncThunk(
         return thunkAPI.rejectWithValue(data);
       }
     } catch (e) {
-      console.log("Error", e.response.data);
+      console.log("Error.Could not connect: ", e.response.data);
       thunkAPI.rejectWithValue(e.response.data);
     }
   }
@@ -79,14 +80,15 @@ export const getAllGames = createAsyncThunk("game/getAll", async (thunkAPI) => {
       },
     });
     let data = await response.json();
-    console.log("response", data);
+    
     if (response.status === 200) {
+      console.log("Get all games response: ", data);
       return { games: data };
     } else {
       return thunkAPI.rejectWithValue(data);
     }
   } catch (e) {
-    console.log("Error", e.response.data);
+    console.log("Error. Could not load all games :", e.response.data);
     thunkAPI.rejectWithValue(e.response.data);
   }
 });
@@ -118,9 +120,9 @@ export const Attack = createAsyncThunk("move/attack", async ({gameId,card},thunk
   }
 });
 
-export const PassTurn = createAsyncThunk("move/pass", async ({gameId,card},thunkAPI) => {
+export const PassTurn = createAsyncThunk("move/pass", async ({gameId},thunkAPI) => {
   try {
-    const response = await fetch(API_URL2 + "attack", {
+    const response = await fetch(API_URL2 + `pass?gameId=${gameId}`, {
       method: "POST",
       mode: 'cors',
       headers: {
@@ -130,12 +132,11 @@ export const PassTurn = createAsyncThunk("move/pass", async ({gameId,card},thunk
         'Connection': 'keep-alive',
         'Authorization': `Bearer ${user.token}`,
       },
-      body: JSON.stringify({GameId: gameId,Card: card})
     });
     let data = await response.json();
 
     if (response.status === 200) {
-      console.log("Attack Action Response is:", data);
+      console.log("Pass Action Response is:", data);
     } else {
       return thunkAPI.rejectWithValue(data);
     }
