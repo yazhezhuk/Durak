@@ -1,24 +1,17 @@
 import React, { useState } from "react";
 import s from "./PlayPlace.module.css";
 import CardOpen from "./Card/CardOpen/CardOpen";
-import { useDispatch } from "react-redux";
-import { tryDefendCard } from "../../../react-redux/gameSlice";
 
-const PlayPlace = ({ pairs, setDefendCard,defendCard,gameId }) => {
-  const [isClicked, setIsClicked] = useState({lear: '', rank:''});
-  const dispatch = useDispatch();
+const PlayPlace = ({ pairs, handleAttackCard, attacker,setSelectedAttackCard }) => {
+    const FROM_ATTACKER_HAND = "from-attacker-plays";
+
+
+  const [selectedCard, setSelectedCard] = useState({ lear: "", rank: "" });
+
   const handleClick = (card) => {
-    const {enemyCard,playerCard } = defendCard
-    setIsClicked(card);
-   
-    setDefendCard((prevState) => ({
-      enemyCard:card ,
-      playerCard: prevState.playerCard,
-    }));
-    if(enemyCard && playerCard){
-      dispatch(tryDefendCard({enemyCard,playerCard,gameId}))
-    }
-
+    setSelectedAttackCard(card)
+    handleAttackCard(FROM_ATTACKER_HAND, card);
+    setSelectedCard(card);
   };
   return (
     <div className={s.playPlace}>
@@ -26,11 +19,18 @@ const PlayPlace = ({ pairs, setDefendCard,defendCard,gameId }) => {
         <div className={s.cardPair} key={index}>
           {pair.map((card, index) => (
             <div
-              className={ (card.lear !== isClicked.lear || card.rank !== isClicked.rank)  ? s.card : s.cardClicked}
+              className={
+                (attacker && JSON.stringify(card)) !==
+                JSON.stringify(selectedCard)
+                  ? s.card
+                  : s.selectedCard
+              }
               key={`${index}-${card.rank}-${card.lear}`}
-              onClick={() => {
-                handleClick({ lear: card.lear, rank: card.rank });
-              }}
+              onClick={
+               attacker
+                  ? handleClick({ lear: card.lear, rank: card.rank })
+                  : ()=>{}
+              }
             >
               <CardOpen rank={card.rank} suit={card.lear} />
             </div>

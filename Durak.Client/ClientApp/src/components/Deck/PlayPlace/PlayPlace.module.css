@@ -5,29 +5,21 @@
     margin-left: 60px;
     width: 65%;
     height: 100%;
-
 }
 
 .cardPair {
     position: relative;
-      width: 10rem;
-      height: 9rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    
+    width: 10rem;
+    height: 9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.card{
+.card {
     position: absolute;
 }
-.card:nth-child(2) {
-    transform: rotate(25deg);
-  }
 
-  .cardClicked{
-      border: 10px solid #000;
-  }
-
-
-
+    .card:nth-child(2) {
+        transform: rotate(25deg);
+    }

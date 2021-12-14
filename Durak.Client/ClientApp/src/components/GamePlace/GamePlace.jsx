@@ -6,18 +6,26 @@ import Player1 from "../Player1/Player1";
 import Button from "./Button/Button";
 import PlayPlace from "../Deck/PlayPlace/PlayPlace";
 import { useDispatch, useSelector } from "react-redux";
-import { Attack, PassTurn } from "../../react-redux/gameSlice";
+import { Attack, PassTurn, tryDefendCard } from "../../react-redux/gameSlice";
 
 const GamePlace = ({ connection, game, gameStarted, setGame }) => {
+  const FROM_ATTACKER_HAND = "from-attacker-plays";
+  const FROM_PLAYER_HAND = "from-player-hand";
+  const { cards } = useSelector((state) => state.deck);
   const [attacker, setAttacker] = useState(true);
   const [trumpLear, setTrumpLear] = useState(null);
   const [opponentHandCount, setOpponentHandCount] = useState(0);
   const [playerHand, setPlayerHand] = useState([]);
   const [fool, setFool] = useState(null);
   const [openedCards, setOpenedCards] = useState([]);
-  const [defendCard, setDefendCard] = useState({
-    attackCard: null,
-    defendedCard: null,
+
+  const [selectedAttackCard, setSelectedAttackCard] = useState({
+    rank: "",
+    lear: "",
+  });
+  const [selectedDefendCard, setSelectedDefendCard] = useState({
+    rank: "",
+    lear: "",
   });
 
   const dispatch = useDispatch();
@@ -35,7 +43,6 @@ const GamePlace = ({ connection, game, gameStarted, setGame }) => {
     },
     [dispatch]
   );
- 
 
   const [canShowTakeButton, setCanShowTakeButton] = useState(false);
   const [canShowPassMoveButton, SetCanShowPassMoveButton] = useState(true);
@@ -68,23 +75,21 @@ const GamePlace = ({ connection, game, gameStarted, setGame }) => {
         });
         connection.on("MovePassedTo", () => {
           console.log("Chel, mozhesh hodit: ");
-          setAttacker(true);
         });
         connection.on("MovePassedFrom", () => {
           console.log("Chel, hod zavershen: ");
-          setAttacker(false);
         });
 
         connection.on("InvalidActionOccured", (error) => {
           console.log("Chel, error: ", error);
         });
-        return () => {
-          connection.off("CardAddedToField");
-          connection.off("CardRemovedFromHand");
-          connection.off("MovePassedTo");
-          connection.off("MovePassedFrom");
-          connection.off("InvalidActionOccured");
-        };
+        // return () => {
+        //   connection.off("CardAddedToField");
+        //   connection.off("CardRemovedFromHand");
+        //   connection.off("MovePassedTo");
+        //   connection.off("MovePassedFrom");
+        //   connection.off("InvalidActionOccured");
+        // };
       }
     }
   }, [connection, gameStarted]);
@@ -97,11 +102,10 @@ const GamePlace = ({ connection, game, gameStarted, setGame }) => {
 
   const pairCards = useMemo(() => {
     console.log(openedCards);
-
     return openedCards.reduce((acc, card) => {
       const len = acc.length - 1;
 
-      if (!acc[len] || acc[len].length === 1) {
+      if (!acc[len] || acc[len].length === 2) {
         acc.push([card]);
       } else {
         acc[len].push(card);
@@ -109,7 +113,33 @@ const GamePlace = ({ connection, game, gameStarted, setGame }) => {
 
       return acc;
     }, []);
-  }, [openedCards]);
+  }, [attacker, openedCards]);
+
+  const handleAttackCard = (fromComponent) => {
+    if (fromComponent === FROM_ATTACKER_HAND &&
+      selectedDefendCard.lear !== "" &&
+      selectedDefendCard.rank !== "") {
+      dispatch(
+        tryDefendCard({
+          enemyCard: selectedAttackCard,
+          playerCard: selectedDefendCard,
+          gameId: game.gameId,
+        })
+      );
+    } else if (
+      fromComponent === FROM_PLAYER_HAND &&
+      selectedAttackCard.lear !== "" &&
+      selectedAttackCard.rank !== ""
+    ) {
+      dispatch(
+        tryDefendCard({
+          enemyCard: selectedAttackCard,
+          playerCard: selectedDefendCard,
+          gameId: game.gameId,
+        })
+      );
+    }
+  };
 
   return (
     <div className={s.gamePlace}>
@@ -120,9 +150,9 @@ const GamePlace = ({ connection, game, gameStarted, setGame }) => {
             <Deck trumpLear={trumpLear} />
             <PlayPlace
               pairs={pairCards}
-              setDefendCard={attacker ? setDefendCard : null}
-              defendCard={defendCard}
-              gameId={game.gameId}
+              handleAttackCard={handleAttackCard}
+              attacker={attacker}
+              setSelectedAttackCard={setSelectedAttackCard}
             />
           </div>
           <div className={s.actionPanel}>
@@ -135,11 +165,10 @@ const GamePlace = ({ connection, game, gameStarted, setGame }) => {
           </div>
           <Player2
             cards={playerHand}
-            setDefendCard={!attacker ? setDefendCard : null}
-            attacker={attacker}
             onCardClick={handleCardClick}
-            defendCard={defendCard}
-            gameId={game.gameId}
+            handleAttackCard={handleAttackCard}
+            attacker={attacker}
+            setSelectedDefendCard={setSelectedDefendCard}
           />
         </>
       ) : null}

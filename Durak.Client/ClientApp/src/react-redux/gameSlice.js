@@ -192,7 +192,7 @@ export const gameSlice = createSlice({
       state.games = [action.payload.games];
     },
     [connectGame.fulfilled]: (state, action) => {
-      state.isConnected = action.payload.isConnected.result;
+      state.isConnected = action.payload.isConnected;
     
     },
     [connectGame.rejected]: (state, action) => {

@@ -9,8 +9,8 @@
     /*
     border: 1px solid black;
     */
-
 }
+
 .card:hover {
     margin: -20px 70px 0 30px;
 }
@@ -21,9 +21,7 @@
     transition: 0.4s;
 }
 
-.cardClicked{
-    border: 10px solid #000;
-}
+
 
 
 /*.card:nth-child(1) {
@@ -73,3 +71,6 @@
     z-index: 2;
     left: 360px;
 }*/
+.selectedCard{
+ border: 5px solid black;
+}

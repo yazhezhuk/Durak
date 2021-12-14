@@ -1,21 +1,29 @@
-import React, {memo, useCallback, useEffect, useState} from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import s from "./GameList.module.css";
-import {useDispatch, useSelector} from "react-redux";
-import {Navigate, NavLink} from "react-router-dom";
-import {logout} from "../../react-redux/ProfileSlices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, NavLink } from "react-router-dom";
+import { logout } from "../../react-redux/ProfileSlices/authSlice";
 import EventBus from "../../common/EventBus";
 import CreateGame from "./CreateGame/CreateGame";
-import {connectGame, getAllGames} from "../../react-redux/gameSlice";
+import { connectGame, getAllGames } from "../../react-redux/gameSlice";
 
 const GameList = (props) => {
-    const {user} = useSelector((state) => state.auth);
+    const { user } = useSelector((state) => state.auth);
     const [loading, setLoading] = useState(false);
     const [games, setGames] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
     const dispatch = useDispatch();
     const [isConnect, setIsConnect] = useState(false);
 
-  
+    useEffect(() => {
+        setLoading(true)
+        dispatch(getAllGames())
+            .unwrap()
+            .then((response) => {
+                setGames(response.games);
+                setLoading(false)
+            });
+    }, []);
 
     const logOut = useCallback(() => {
         dispatch(logout());
@@ -26,7 +34,7 @@ const GameList = (props) => {
         dispatch(getAllGames())
             .unwrap()
             .then((allGames) => {
-                const items = allGames.games.map((el) => (el.name));
+                const items = allGames.games;
                 setGames(items);
                 setLoading(false);
             });
@@ -43,17 +51,17 @@ const GameList = (props) => {
     }, [logOut]);
 
     if (!user) {
-      return <Navigate to="/login" />;
+        return <Navigate to="/login" />;
     }
     if (isConnect) {
-        return <Navigate to="/game"/>;
+        return <Navigate to="/game" />;
     }
 
     const handleSelectedGame = (game) => {
         setSelectedGame(game);
     };
     const executeConnect = async (name) => {
-        const resultAction = await dispatch(connectGame({name}));
+        const resultAction = await dispatch(connectGame({ name }));
         if (connectGame.fulfilled.match(resultAction)) {
             console.log("user successfully connected");
         }
@@ -75,11 +83,10 @@ const GameList = (props) => {
                             loading={loading}
                             games={games}
                             setGames={setGames}
-                            
                         />
                     </div >
                     <div className={s.gamesContainer}>
-                        
+
                         {games ?
                             games.map((game, indx) => {
                                 return (
@@ -92,17 +99,17 @@ const GameList = (props) => {
                                         }
                                         key={indx}
                                     >
-                                        {game}
+                                        {game.name}
                                     </div>
                                 );
-                            }) :( <>pls create new game, or press "update" button</> )}
+                            }) : 'More games'}
                     </div>
                     <div className={s.buttonGame}>
                         <button className={s.RequestAllGames}
-                                disabled={loading}
-                                onClick={() => {
-                                    getAll();
-                                }}
+                            disabled={loading}
+                            onClick={() => {
+                                getAll();
+                            }}
                         >
                             Update
                         </button>
@@ -110,7 +117,7 @@ const GameList = (props) => {
                         <button className={s.startGame}
                             disabled={!selectedGame}
                             onClick={() => {
-                                executeConnect(selectedGame);
+                                executeConnect(selectedGame.name);
                             }}
                         >
                             start

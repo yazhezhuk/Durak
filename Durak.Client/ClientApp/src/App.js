@@ -47,11 +47,11 @@ const App = () => {
         })
         .catch((err) => console.log("Error while establishing connection :("));
     }
-    return () => {
-      if (connection) {
-        connection.off("GameStarted");
-      }
-    };
+    // return () => {
+    //   if (connection) {
+    //     connection.off("GameStarted");
+    //   }
+    // };
   }, [connection]);
 
   return (
