@@ -5,6 +5,7 @@ import { user } from "./ProfileSlices/authSlice";
 
 const API_URL = "http://localhost:3000/api/game/";
 
+const API_URL2 = "http://localhost:3000/api/move/";
 export const createGame = createAsyncThunk(
   "game/create",
   async ({ name }, thunkAPI) => {
@@ -90,9 +91,9 @@ export const getAllGames = createAsyncThunk("game/getAll", async (thunkAPI) => {
   }
 });
 
-export const Attack = createAsyncThunk("game/attack", async ({gameId,card},thunkAPI) => {
+export const Attack = createAsyncThunk("move/attack", async ({gameId,card},thunkAPI) => {
   try {
-    const response = await fetch(API_URL + "attack", {
+    const response = await fetch(API_URL2 + "attack", {
       method: "POST",
       mode: 'cors',
       headers: {

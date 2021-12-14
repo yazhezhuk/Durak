@@ -45,7 +45,7 @@ const GamePlace = ({ connection, game, gameStarted }) => {
           setOpenedCards((oldArr) => [...oldArr, card]);
         });
     },
-    [dispatch, game.gameId]
+    [dispatch]
   );
 
   useEffect(() => {
@@ -54,6 +54,8 @@ const GamePlace = ({ connection, game, gameStarted }) => {
     if (gameStarted) {
       if (connection) {
         connection.on("CardAddedToField", (card) => {
+          console.log('Карта гроші 1 ствол: ',card)
+        
           handleCardClick(card)
         });
       }
