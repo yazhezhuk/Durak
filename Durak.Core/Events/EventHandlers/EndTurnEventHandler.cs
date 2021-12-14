@@ -16,7 +16,7 @@ public class EndTurnEventHandler : BaseEventHandler<EndTurnApplicationEvent>
 
 	public override Task Handle(EndTurnApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		var player = notification.Game.CurrentPlayer;
 		var gameRepository = scopeServiceProvider.GetService<IRepository<Game>>();

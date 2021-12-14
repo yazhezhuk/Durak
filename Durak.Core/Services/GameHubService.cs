@@ -30,7 +30,7 @@ public class GameHubService : Hub
 
 	   if (connectionsUser == null || connectionsIdentity == null)
 	   {
-		   _logger.LogInformation("Hub connection established with errors.");
+		   _logger.LogInformation("Hub connection established with errors");
 		   return base.OnConnectedAsync();
 	   }
 
@@ -51,5 +51,24 @@ public class GameHubService : Hub
 
 	public Task PlaceCardOnField(Card card) =>
 		_context.Clients.All.SendAsync("CardAddedToField", card);
+
+	public Task CardRemovedFromHand(AppUser fromUser,Card card) =>
+		_context.Clients.Client(_connections[fromUser.UserName])
+			.SendAsync("CardRemovedFromHand", card);
+
+	public Task PassMoveTo(AppUser toUser) =>
+		_context.Clients.Client(_connections[toUser.UserName])
+			.SendAsync("MovePassedTo");
+	public Task PassMoveFrom(AppUser fromUser) =>
+		_context.Clients.Client(_connections[fromUser.UserName])
+			.SendAsync("MovePassedFrom");
+
+	public Task PlaceCardOnAnotherCard(Card upperCard,Card lowerCard) =>
+		_context.Clients.All.SendAsync("CardPlacedOnAnother", upperCard, lowerCard);
+
+	public Task InvalidActionOccured(AppUser user,string message) =>
+		_context.Clients.Client(_connections[user.UserName])
+			.SendAsync("InvalidActionOccured", message);
+
 
 }

@@ -14,28 +14,24 @@ namespace Durak.Core.Events.EventHandlers;
 public class StartGameEventHandler : BaseEventHandler<StartGameApplicationEvent>
 {
 
-	public StartGameEventHandler(IServiceProvider serviceProvider) : base(serviceProvider)
-	{
-	
-	}
-
+	public StartGameEventHandler(IServiceProvider serviceProvider) : base(serviceProvider) {  }
 
 	public override Task Handle(StartGameApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		var gameRepository = scopeServiceProvider.GetService<IRepository<Game>>() ?? throw new ApplicationException();
-		var gameHubService = scopeServiceProvider.GetService<GameHubService>() ?? throw new ApplicationException();
 
-		
 		Logger.LogInformation("{}, Game",notification.Game.Name );
+
 		notification.Game.AttackPlayer.CanMove = true;
 		notification.Game.DefencePlayer.CanMove = false;
 		notification.Game.GameState = GameState.Ongoing;
+
 		gameRepository.Update(notification.Game);
 
-		gameHubService.StartGameForUser(notification.Game.AttackPlayer.AppIdentity,notification.Game);
-		gameHubService.StartGameForUser(notification.Game.DefencePlayer.AppIdentity, notification.Game);
+		GameHubService.StartGameForUser(notification.Game.AttackPlayer.AppIdentity,notification.Game);
+		GameHubService.StartGameForUser(notification.Game.DefencePlayer.AppIdentity, notification.Game);
 
 		return Task.CompletedTask;
 	}

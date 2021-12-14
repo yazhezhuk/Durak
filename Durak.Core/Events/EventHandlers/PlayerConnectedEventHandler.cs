@@ -19,12 +19,11 @@ public class PlayerConnectedEventHandler : BaseEventHandler<PlayerConnectedAppli
 
 	public override Task Handle(PlayerConnectedApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
-		var scopeServiceProvider = scope.ServiceProvider;
+		using var scope = ServiceProvider.CreateScope();
 
-		var _playerRepository = scopeServiceProvider.GetService<IRepository<Player>>();
-		var _playerHandRepository = scopeServiceProvider.GetService<IRepository<PlayerHand>>();
-		var _mediator = scopeServiceProvider.GetService<IMediator>();
+		var scopeServiceProvider = scope.ServiceProvider;
+		var playerHandRepository = scopeServiceProvider.GetService<IRepository<PlayerHand>>();
+		var mediator = scopeServiceProvider.GetService<IMediator>();
 
 		var player = new Player(
 			notification.TargetedSession.Game.Id,
@@ -35,23 +34,23 @@ public class PlayerConnectedEventHandler : BaseEventHandler<PlayerConnectedAppli
 				: Role.Defender
 		};
 
-		_playerRepository.Add(player);
+		PlayerRepository.Add(player);
 
 		Logger.LogInformation(
 			$"Player with user id:{notification.AppUser.Id} connected to the game session" +
 			$"with id {notification.TargetedSession.Game.Id} with {player.CurrentRole.ToString()} role");
 
 		var playerHand = new PlayerHand(player.Id);
-		_playerHandRepository.Add(playerHand);
+		playerHandRepository.Add(playerHand);
 
-		_playerRepository.Update(player);
+		PlayerRepository.Update(player);
 
 		player.TakeEnoughCards(notification.TargetedSession.Game.Deck);
-		_playerRepository.Update(player);
+		PlayerRepository.Update(player);
 
 		if (notification.TargetedSession.FirstPlayerConnected &&
 		    notification.TargetedSession.SecondPlayerConnected)
-			_mediator.Publish(new StartGameApplicationEvent(notification.TargetedSession.Game), cancellationToken);
+			mediator.Publish(new StartGameApplicationEvent(notification.TargetedSession.Game), cancellationToken);
 
 		return Task.CompletedTask;
 	}

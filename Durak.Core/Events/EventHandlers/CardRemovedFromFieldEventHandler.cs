@@ -13,7 +13,7 @@ public class CardRemovedFromGameEventHandler : BaseEventHandler<CardRemovedFromF
 
 	public override Task Handle(CardRemovedFromField notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		Logger.LogInformation("Card:{} has been removed from field",notification.Card);
 

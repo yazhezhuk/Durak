@@ -4,6 +4,10 @@ namespace Durak.Core.Events.ApplicationEvents;
 
 public class TurnPassedEvent : BaseApplicationEvent
 {
-	public TurnPassedEvent(Player actionClaimant) : base(actionClaimant)
-	{ }
+	public Player TurnReceiver { get; }
+
+	public TurnPassedEvent(Player actionClaimant, Player turnReceiver) : base(actionClaimant)
+	{
+		TurnReceiver = turnReceiver;
+	}
 }

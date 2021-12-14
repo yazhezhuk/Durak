@@ -48,7 +48,7 @@ namespace Durak.Client.Services;
 				game.Field.RemoveCard(playedCard);
 				playerToTake.PlayerHand.AddCard(playedCard);
 			}
-			PassTurn(game,player);
+			game.PassMove();
 		}
 
 		public void DefendFromCard(Game game, Card playerCard, Card enemyCard)
@@ -59,20 +59,12 @@ namespace Durak.Client.Services;
 			var isYourCardIsTrump = playerCard.Lear == game.TrumpLear;
 			var isEnemyCardIsTrump = enemyCard.Lear == game.TrumpLear;
 
-			if (playerCard.TryBeatAnother(enemyCard, isYourCardIsTrump, isEnemyCardIsTrump))
-			{
-				var gameCard = game.CurrentPlayer.PlayerHand.DrawCard(playerCard);
-				var enemyGameCard = game.Field.PlayedCards.First(card => card.Card == enemyCard);
-				game.Field.PlayCardToDefend(gameCard, enemyGameCard);
-			}
+			if (!playerCard.TryBeatAnother(enemyCard, isYourCardIsTrump, isEnemyCardIsTrump)) return;
+			var gameCard = game.CurrentPlayer.PlayerHand.DrawCard(playerCard);
+			var enemyGameCard = game.Field.PlayedCards.First(card => card.Card == enemyCard);
+			game.Field.PlayCardToDefend(gameCard, enemyGameCard);
 		}
 
-		public void PassTurn(Game game, Player player)
-		{
-			game.ValidateUserCanMove(player.AppIdentity, Role.Both);
-
-			game.PassMove();
-		}
 
 		public void HandsUp(Game game, Player player)
 		{

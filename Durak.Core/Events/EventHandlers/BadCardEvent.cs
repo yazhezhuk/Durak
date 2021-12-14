@@ -3,9 +3,13 @@ using Durak.Core.GameModels.Players;
 
 namespace Durak.Core.Events.EventHandlers;
 
-public class BadCardApplicationEvent : BaseApplicationEvent
+public class InvalidOperationEvent : BaseApplicationEvent
 {
+	public string ErrorMessage { get; }
 
-	public BadCardApplicationEvent(Player actionClaimant) : base(actionClaimant)
-	{ }
+
+	public InvalidOperationEvent(Player actionClaimant,string errorMessage) : base(actionClaimant)
+	{
+		ErrorMessage = errorMessage;
+	}
 }

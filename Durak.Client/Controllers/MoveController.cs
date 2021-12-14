@@ -1,11 +1,13 @@
 using System.Security.Claims;
 using Durak.Client.Models;
 using Durak.Client.Services;
+using Durak.Core.Events.EventHandlers;
 using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Session;
 using Durak.Core.Interfaces;
 using Durak.Core.Services;
 using Durak.Infrastructure.Integration;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,24 +20,27 @@ namespace Durak.Client.Controllers;
 [Route("api/[controller]")]
 public class MoveController : ControllerBase
 {
-	private readonly IGameSessionService _gameSessionService;
 	private readonly UserManager<AppUser> _userManager;
 	private readonly IGameSessionRepository _gameSessionRepository;
 	private readonly IFieldValidator _fieldValidator;
+	private readonly IMediator _mediator;
 	private readonly IMoveService _moveService;
+	private readonly IRepository<Game> _gameRepository;
 	private readonly GameSession _currentGameSession;
 
 
 
-	public MoveController(
+	public MoveController(IMediator mediator,
 		IMoveService moveService,
+		IRepository<Player> playerRepository,
 		IRepository<Game> gameRepository,
 		IGameSessionRepository gameSessionRepository,
 		IGameSessionService gameSessionService, UserManager<AppUser> userManager)
 	{
+		_mediator = mediator;
 		_moveService = moveService;
+		_gameRepository = gameRepository;
 		_gameSessionRepository = gameSessionRepository;
-		_gameSessionService = gameSessionService;
 		_userManager = userManager;
 
 
@@ -84,25 +89,29 @@ public class MoveController : ControllerBase
 	}
 
 	[HttpPost("pass")]
-	public IActionResult Pass()
+	public IActionResult Pass([FromQuery]int gameId)
 	{
+		var currentUser = ResolveCurrentUserFromClaims();
+		var currentGame = _gameRepository.Get(gameId);
+		var userWithGameIdentity = currentUser.AsGameIdentity(currentGame.Id);
 
-		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
-
-		var gameSession = _gameSessionRepository.GetByUserName(currentUser.UserName);
-		var game = gameSession.Game;
-
-
-		if (!game.ValidateUserCanMove(currentUser, Role.Both))
+		if (!currentGame.ValidateUserCanMove(currentUser, Role.Both))
 		{
-			//_eventPublisher.PublishEvent(new InvalidActionIntegrationEvent());
+			_mediator.Publish(
+				new InvalidOperationEvent(userWithGameIdentity,
+					"Cannot pass turn, please wait for your turn."));
 			return Problem("invalid action!");
 		}
 
-		_moveService.PassTurn(game,game.CurrentPlayer);
+		currentGame.PassMove();
 
-		return Ok(new { game });
+		return Ok();
+	}
+
+	private AppUser ResolveCurrentUserFromClaims()
+	{
+		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+		return _userManager.FindByNameAsync(currentUserName).Result;
 	}
 
 

@@ -18,12 +18,13 @@ public class TurnPassedEventHandler : BaseEventHandler<TurnPassedEvent>
 
 	public override Task Handle(TurnPassedEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
-		var scopeServiceProvider = scope.ServiceProvider;
-		var _playerRepository = scopeServiceProvider.GetService<IRepository<Player>>();
+		var player = ResolveUserIdentity(notification.ActionClaimantId);
 
-		Logger.LogInformation("User {} successfully passed turn",
-			_playerRepository.Get((int)notification.ActionClaimantId).AppIdentity.UserName);
+		GameHubService.PassMoveFrom(player);
+		GameHubService.PassMoveTo(notification.TurnReceiver.AppIdentity);
+
+		Logger.LogInformation("User {} successfully passed turn");
+
 		return Task.CompletedTask;
 	}
 

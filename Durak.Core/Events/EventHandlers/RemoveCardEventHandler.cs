@@ -1,5 +1,6 @@
 using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.GameModels;
+using Durak.Core.GameModels.Players;
 using Durak.Core.Interfaces;
 using Durak.Infrastructure.Integration;
 using MediatR;
@@ -15,7 +16,7 @@ public class CardTakenEventHandler : BaseEventHandler<CardTakenApplicationEvent>
 
 	public override Task Handle(CardTakenApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		var gameRepository = scopeServiceProvider.GetService<GameHubService>();
 
@@ -23,4 +24,6 @@ public class CardTakenEventHandler : BaseEventHandler<CardTakenApplicationEvent>
 		Logger.LogInformation("Card:{} added to hand", notification.Card);
 		return Task.CompletedTask;
 	}
+
+
 }

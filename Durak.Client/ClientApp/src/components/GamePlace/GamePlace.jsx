@@ -1,21 +1,12 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, {useEffect, useMemo, useState,} from "react";
 import s from "./GamePlace.module.css";
 import Player2 from "../Player2/Player2";
 import Deck from "../Deck/Deck";
 import Player1 from "../Player1/Player1";
 import Button from "./Button/Button";
 import PlayPlace from "../Deck/PlayPlace/PlayPlace";
-import { useDispatch, useSelector } from "react-redux";
-import { initCards, shuffle, setTrump } from "../../react-redux/deckSlice";
-import { setDeck } from "../../react-redux/bankerSlice";
-import { HttpTransportType, HubConnectionBuilder } from "@microsoft/signalr";
-import { Attack } from "../../react-redux/gameSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {Attack} from "../../react-redux/gameSlice";
 
 const GamePlace = ({ connection, game, gameStarted }) => {
   const { cards } = useSelector((state) => state.deck);
@@ -37,16 +28,10 @@ const GamePlace = ({ connection, game, gameStarted }) => {
       updateGameState(game);
     }
   }, []);
-  const handleCardClick = useCallback(
+  const handleCardClick = useMemo( () =>
     (card) => {
       dispatch(Attack({ card, gameId: game.gameId }))
-        .unwrap()
-        .then(() => {
-          setOpenedCards((oldArr) => [...oldArr, card]);
-        });
-    },
-    [dispatch]
-  );
+    }, [dispatch])
 
   useEffect(() => {
     //const loadedGame = JSON.parse(localStorage.getItem("currentGame"));
@@ -55,12 +40,32 @@ const GamePlace = ({ connection, game, gameStarted }) => {
       if (connection) {
         connection.on("CardAddedToField", (card) => {
           console.log('Карта гроші 1 ствол: ',card)
-        
-          handleCardClick(card)
+          setOpenedCards((oldArr) => [...oldArr, card])
         });
+        connection.on("CardRemovedFromHand", (card) => {
+          console.log('Карта гроші мінус ствол: ',card)
+          setPlayerHand((old) =>
+          {
+            const index = old.indexOf(card);
+            console.log('Нашов: ',card, index)
+
+            return old.filter(c => (c.lear !== card.lear) || (c.rank !== card.rank))
+          })
+        });
+        connection.on("MovePassedTo", () => {
+          console.log('Chel, mozhesh hodit: ')
+        });
+        connection.on("MovePassedFrom", () => {
+          console.log('Chel, hod zavershen: ')
+        });
+
+        connection.on("InvalidActionOccured", (error) => {
+          console.log('Chel, error: ', error)
+        });
+
       }
     }
-  }, [connection, gameStarted, handleCardClick]);
+  }, [connection]);
 
   const [canShowTakeButton, setCanShowTakeButton] = useState(true);
   const [canShowHangUpButton, SetCanShowHangUpButton] = useState(false);

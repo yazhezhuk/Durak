@@ -9,6 +9,5 @@ public interface IMoveService
 	void TakeCards(Player player,Game game);
 	void DefendFromCard(Game game, Card playerCard, Card enemyCard);
 	void HandsUp(Game game, Player player);
-	void PassTurn(Game game, Player player);
 
 }

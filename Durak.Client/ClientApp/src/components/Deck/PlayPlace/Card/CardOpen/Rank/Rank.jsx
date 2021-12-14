@@ -8,7 +8,6 @@ const Rank = ({ suit, rank }) => {
     let parsedRank = '';
 
   (rank === "") ? parsedRank = '' : (parsedRank = RankFactory(rank));
-  
   return (
     <div className={s.rank}>
       <div className={s.rank_high}>{parsedRank.slice(1)  }</div>

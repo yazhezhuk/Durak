@@ -3,7 +3,6 @@ import s from './Player2.module.css'
 import CardOpen from "../Deck/PlayPlace/Card/CardOpen/CardOpen";
 
 const Player2 = ({cards,onCardClick}) => {
-   
     return (
         <div className={s.player2}>
             

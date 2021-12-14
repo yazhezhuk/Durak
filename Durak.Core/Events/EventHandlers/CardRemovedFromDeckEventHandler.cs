@@ -12,7 +12,7 @@ public class CardRemovedFromDeckEventHandler : BaseEventHandler<CardRemovedFromD
 
 	public override Task Handle(CardRemovedFromDeckApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		Logger.LogInformation($"Card {notification.RemovedCard} was removed from deck");
 		return Task.CompletedTask;

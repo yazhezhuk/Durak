@@ -1,6 +1,8 @@
 using Durak.Core.Events.ApplicationEvents;
 using Durak.Core.GameModels;
+using Durak.Core.GameModels.Players;
 using Durak.Core.Interfaces;
+using Durak.Infrastructure.Integration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -14,9 +16,13 @@ public class CardDrewFromHandEventHandler : BaseEventHandler<CardDrawnFromHandAp
 
 	public override Task Handle(CardDrawnFromHandApplicationEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
+		var playerRepository = scopeServiceProvider.GetService<IRepository<Player>>();
+
+		var user = playerRepository.Get(notification.ActionClaimantId).AppIdentity;
+
 		Logger.LogInformation("Card {} has been drawn from card",notification.Card);
-		return Task.CompletedTask;
+		return GameHubService.CardRemovedFromHand(user,notification.Card);
 	}
 }

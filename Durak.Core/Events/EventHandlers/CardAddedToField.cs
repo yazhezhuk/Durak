@@ -14,10 +14,9 @@ public class CardAddedToFieldEventHandler : BaseEventHandler<CardAddedToFieldEve
 
 	public override Task Handle(CardAddedToFieldEvent notification, CancellationToken cancellationToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
-		var gameHubService = scopeServiceProvider.GetService<GameHubService>() ?? throw new ApplicationException();
 
-		return gameHubService.PlaceCardOnField(notification.Card.Card);
+		return GameHubService.PlaceCardOnField(notification.Card.Card);
 	}
 }

@@ -18,13 +18,13 @@ public class CardAddedToHandEventHandler : BaseEventHandler<CardAddedToHandAppli
 	public override Task Handle(CardAddedToHandApplicationEvent notification, CancellationToken cancellationToken)
 
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = ServiceProvider.CreateScope();
 		var scopeServiceProvider = scope.ServiceProvider;
 		var playerRep = scopeServiceProvider.GetService<IRepository<Player>>();
 
 		Logger.LogInformation("Card:{} has been added to player: {}",
 			notification.Card,
-			playerRep.Get((int)notification.ActionClaimantId).AppIdentity.UserName);
+			playerRep.Get(notification.ActionClaimantId).AppIdentity.UserName);
 
 			return Task.CompletedTask;
 	}
