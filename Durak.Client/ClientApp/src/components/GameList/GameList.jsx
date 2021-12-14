@@ -15,15 +15,7 @@ const GameList = (props) => {
     const dispatch = useDispatch();
     const [isConnect, setIsConnect] = useState(false);
 
-    useEffect(() => {
-        setLoading(true)
-        dispatch(getAllGames())
-            .unwrap()
-            .then((response) => {
-                setGames(response.games);
-                setLoading(false)
-            });
-    }, []);
+  
 
     const logOut = useCallback(() => {
         dispatch(logout());

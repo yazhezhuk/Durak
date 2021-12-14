@@ -43,10 +43,7 @@ const Login = (props) => {
   };
 
   if (isLoggedIn) {
-    setTimeout(function () {
       return <Navigate to="/profile" />;
-    }, 1000);
-    
   }
 
   if (toAbout) {
