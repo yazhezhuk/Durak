@@ -25,20 +25,9 @@ const CreateGame = ({setLoading,loading,games,setGames}) => {
   const handleLogin = (formValue) => {
     const { name } = formValue;
     setLoading(true);
-    dispatch(createGame({ name}))
-      .unwrap()
-      .then((response) => {
-        console.log( response.game)
-
-
-
-        setGames(prevState => [...prevState, response.game])
-
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    dispatch(createGame({name}))
+      setGames(prevState => [ ...prevState, name])
+      setLoading(false);
     
   };
   return (

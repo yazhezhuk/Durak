@@ -26,7 +26,7 @@ const GameList = (props) => {
         dispatch(getAllGames())
             .unwrap()
             .then((allGames) => {
-                const items = allGames.games;
+                const items = allGames.games.map((el) => (el.name));
                 setGames(items);
                 setLoading(false);
             });
@@ -75,6 +75,7 @@ const GameList = (props) => {
                             loading={loading}
                             games={games}
                             setGames={setGames}
+                            
                         />
                     </div >
                     <div className={s.gamesContainer}>
@@ -91,10 +92,10 @@ const GameList = (props) => {
                                         }
                                         key={indx}
                                     >
-                                        {game.name}
+                                        {game}
                                     </div>
                                 );
-                            }) : 'More games'}
+                            }) :( <>pls create new game, or press "update" button</> )}
                     </div>
                     <div className={s.buttonGame}>
                         <button className={s.RequestAllGames}
@@ -109,7 +110,7 @@ const GameList = (props) => {
                         <button className={s.startGame}
                             disabled={!selectedGame}
                             onClick={() => {
-                                executeConnect(selectedGame.name);
+                                executeConnect(selectedGame);
                             }}
                         >
                             start
