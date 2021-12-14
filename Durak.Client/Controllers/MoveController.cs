@@ -47,7 +47,7 @@ public class MoveController : ControllerBase
 		var currentUserName = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 		var currentUser =_userManager.FindByNameAsync(currentUserName).Result;
 
-		var gameSession = _gameSessionRepository.GetByGameName(attackModel.GameName);
+		var gameSession = _gameSessionRepository.Get(attackModel.GameId);
 		var game = gameSession.Game;
 
 		if (!game.ValidateUserCanMove(currentUser, Role.Attacker))

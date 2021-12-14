@@ -44,7 +44,7 @@ public class Field : BaseEntity<int>, IRootEntity
 	public void PlayCard(GameCard card)
 	{
 		PlayedCards.Add(card);
-		Events.Add(new PlaceCardApplicationEvent(card.PlayerId,card));
+		Events.Add(new CardAddedToFieldEvent(card.PlayerId,card));
 	}
 
 	public void PlayCardToDefend(GameCard playerCard,GameCard enemyCard)

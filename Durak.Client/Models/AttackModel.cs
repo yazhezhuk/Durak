@@ -8,5 +8,5 @@ public class AttackModel
 	[Required(ErrorMessage = "Card is required")]
 	public Card Card { get; set; }
 	[Required(ErrorMessage = "Game session Id is required")]
-	public string GameName { get; set; }
+	public int GameId { get; set; }
 }

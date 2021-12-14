@@ -3,9 +3,9 @@ using Durak.Core.GameModels.Players;
 
 namespace Durak.Core.Events.ApplicationEvents;
 
-public class PlaceCardApplicationEvent : BaseApplicationEvent
+public class CardAddedToFieldEvent : BaseApplicationEvent
 {
 	public readonly GameCard Card;
-	public PlaceCardApplicationEvent(int player,GameCard card) : base(player) =>
+	public CardAddedToFieldEvent(int player,GameCard card) : base(player) =>
 		Card = card;
 }

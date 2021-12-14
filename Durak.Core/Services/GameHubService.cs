@@ -1,3 +1,5 @@
+using Durak.Core;
+using Durak.Core.GameModels.Cards;
 using Durak.Core.GameModels.Players;
 using Durak.Core.GameModels.Session;
 using Microsoft.AspNetCore.Authorization;
@@ -43,9 +45,11 @@ public class GameHubService : Hub
 		return base.OnConnectedAsync();
 	}
 
-	public void StartGameForUser(AppUser asUser, Game game)
-	{
+	public Task StartGameForUser(AppUser asUser, Game game) =>
 		_context.Clients.Client(_connections[asUser.UserName])
 			.SendAsync("GameStarted", game.ToViewModel(asUser));
-	}
+
+	public Task PlaceCardOnField(Card card) =>
+		_context.Clients.All.SendAsync("CardAddedToField", card);
+
 }
