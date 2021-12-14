@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Durak.Client.Controllers;
 using Durak.Client.Services;
 using Durak.Core;
@@ -16,10 +18,14 @@ using Durak.Infrastructure.Integration;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -151,7 +157,6 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSignalR();
 
 
-
 var app = builder.Build();
 app.UseCors("AllowAllOrigins");
 
@@ -166,8 +171,8 @@ else
 	app.UseExceptionHandler("/Error");
 	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
-	app.UseSpaStaticFiles(new StaticFileOptions { RequestPath = "/ClientApp/build" });
 }
+app.UseSpaStaticFiles(new StaticFileOptions { RequestPath = "/ClientApp/build" });
 
 app.UseHttpsRedirection();
 app.UseRouting();
