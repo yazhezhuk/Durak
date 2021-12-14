@@ -21,7 +21,9 @@
     transition: 0.4s;
 }
 
-
+.cardClicked{
+    border: 10px solid #000;
+}
 
 
 /*.card:nth-child(1) {

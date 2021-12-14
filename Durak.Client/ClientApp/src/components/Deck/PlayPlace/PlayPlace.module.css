@@ -25,6 +25,9 @@
     transform: rotate(25deg);
   }
 
+  .cardClicked{
+      border: 10px solid #000;
+  }
 
 
 

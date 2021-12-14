@@ -145,7 +145,32 @@ export const PassTurn = createAsyncThunk("move/pass", async ({gameId},thunkAPI) 
     thunkAPI.rejectWithValue(e.response.data);
   }
 });
+export const tryDefendCard = createAsyncThunk("move/defend", async ({enemyCard, playerCard, gameId},thunkAPI) => {
+  try {
+    const response = await fetch(API_URL2 + 'defend', {
+      method: "POST",
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
 
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Authorization': `Bearer ${gameId}`,
+      },
+      body: JSON.stringify({EnemyCard:enemyCard ,PlayerCard:playerCard })
+    });
+    let data = await response.json();
+
+    if (response.status === 200) {
+      console.log("Pass Action Response is:", data);
+    } else {
+      return thunkAPI.rejectWithValue(data);
+    }
+  } catch (e) {
+    console.log("Error", e.response.data);
+    thunkAPI.rejectWithValue(e.response.data);
+  }
+});
 
 export const gameSlice = createSlice({
   name: "gameSession",

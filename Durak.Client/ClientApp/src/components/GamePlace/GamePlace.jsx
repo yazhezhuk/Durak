@@ -8,23 +8,23 @@ import PlayPlace from "../Deck/PlayPlace/PlayPlace";
 import { useDispatch, useSelector } from "react-redux";
 import { Attack, PassTurn } from "../../react-redux/gameSlice";
 
-const GamePlace = ({ connection, game, gameStarted,setGame }) => {
-  const { cards } = useSelector((state) => state.deck);
-  const player1Hand = cards.slice(7, 13);
-  const player2Hand = cards.slice(1, 7);
+const GamePlace = ({ connection, game, gameStarted, setGame }) => {
   const [attacker, setAttacker] = useState(true);
-  const [deck, setDeck] = useState([{ rank: "R6", suit: "Diamonds" }]);
   const [trumpLear, setTrumpLear] = useState(null);
   const [opponentHandCount, setOpponentHandCount] = useState(0);
   const [playerHand, setPlayerHand] = useState([]);
   const [fool, setFool] = useState(null);
   const [openedCards, setOpenedCards] = useState([]);
+  const [defendCard, setDefendCard] = useState({
+    attackCard: null,
+    defendedCard: null,
+  });
 
   const dispatch = useDispatch();
   useEffect(() => {
-    console.clear()
+    console.clear();
     const loadedGame = localStorage.getItem("currentGame");
-    console.log(loadedGame)
+    console.log(loadedGame);
     if (gameStarted) {
       updateGameState(game);
     }
@@ -35,6 +35,7 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
     },
     [dispatch]
   );
+ 
 
   const [canShowTakeButton, setCanShowTakeButton] = useState(false);
   const [canShowPassMoveButton, SetCanShowPassMoveButton] = useState(true);
@@ -53,7 +54,6 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
 
     if (gameStarted) {
       if (connection) {
-        
         connection.on("CardAddedToField", (card) => {
           console.log("Карта гроші 1 ствол: ", card);
           setOpenedCards((oldArr) => [...oldArr, card]);
@@ -61,7 +61,6 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
         connection.on("CardRemovedFromHand", (card) => {
           console.log("Карта гроші мінус ствол: ", card);
           setPlayerHand((old) => {
-
             return old.filter(
               (c) => c.lear !== card.lear || c.rank !== card.rank
             );
@@ -69,9 +68,11 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
         });
         connection.on("MovePassedTo", () => {
           console.log("Chel, mozhesh hodit: ");
+          setAttacker(true);
         });
         connection.on("MovePassedFrom", () => {
           console.log("Chel, hod zavershen: ");
+          setAttacker(false);
         });
 
         connection.on("InvalidActionOccured", (error) => {
@@ -96,10 +97,11 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
 
   const pairCards = useMemo(() => {
     console.log(openedCards);
+
     return openedCards.reduce((acc, card) => {
       const len = acc.length - 1;
 
-      if ((!acc[len] || acc[len].length === 2) && attacker) {
+      if (!acc[len] || acc[len].length === 1) {
         acc.push([card]);
       } else {
         acc[len].push(card);
@@ -107,7 +109,7 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
 
       return acc;
     }, []);
-  }, [attacker, openedCards]);
+  }, [openedCards]);
 
   return (
     <div className={s.gamePlace}>
@@ -116,7 +118,12 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
           <Player1 opponentCards={opponentHandCount} />
           <div className={s.cards}>
             <Deck trumpLear={trumpLear} />
-            <PlayPlace pairs={pairCards} />
+            <PlayPlace
+              pairs={pairCards}
+              setDefendCard={attacker ? setDefendCard : null}
+              defendCard={defendCard}
+              gameId={game.gameId}
+            />
           </div>
           <div className={s.actionPanel}>
             {canShowTakeButton && (
@@ -126,7 +133,14 @@ const GamePlace = ({ connection, game, gameStarted,setGame }) => {
               <Button label="Pass move!" onClick={handlePassClick} />
             )}
           </div>
-          <Player2 cards={playerHand} onCardClick={handleCardClick} />
+          <Player2
+            cards={playerHand}
+            setDefendCard={!attacker ? setDefendCard : null}
+            attacker={attacker}
+            onCardClick={handleCardClick}
+            defendCard={defendCard}
+            gameId={game.gameId}
+          />
         </>
       ) : null}
     </div>
