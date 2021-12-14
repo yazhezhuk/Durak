@@ -9,7 +9,7 @@ public class InvalidOperationEventHandler : BaseEventHandler<InvalidOperationEve
 	{ }
 
 	public override Task Handle(InvalidOperationEvent notification, CancellationToken cancellationToken) =>
-		GameHubService.InvalidActionOccured(ResolveUserIdentity(notification.ActionClaimantId),
+		GameHubService.InvalidActionOccured(ResolvePlayerIdentity(notification.ActionClaimantId).AppIdentity,
 			notification.ErrorMessage);
 
 }

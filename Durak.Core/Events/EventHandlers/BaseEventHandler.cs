@@ -27,7 +27,7 @@ public abstract class BaseEventHandler<T> : INotificationHandler<T> where T : IN
 		Logger = scopeServiceProvider.GetService<ILogger<BaseEventHandler<T>>>();
 	}
 
-	protected AppUser ResolveUserIdentity(int userId) => PlayerRepository.Get(userId)?.AppIdentity;
+	protected Player ResolvePlayerIdentity(int userId) => PlayerRepository.Get(userId);
 
 	public abstract Task Handle(T notification, CancellationToken cancellationToken);
 }

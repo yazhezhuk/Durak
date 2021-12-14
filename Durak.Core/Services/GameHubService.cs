@@ -56,12 +56,12 @@ public class GameHubService : Hub
 		_context.Clients.Client(_connections[fromUser.UserName])
 			.SendAsync("CardRemovedFromHand", card);
 
-	public Task PassMoveTo(AppUser toUser) =>
-		_context.Clients.Client(_connections[toUser.UserName])
-			.SendAsync("MovePassedTo");
-	public Task PassMoveFrom(AppUser fromUser) =>
-		_context.Clients.Client(_connections[fromUser.UserName])
-			.SendAsync("MovePassedFrom");
+	public Task PassMoveTo(Player toUser) =>
+		_context.Clients.Client(_connections[toUser.AppIdentity.UserName])
+			.SendAsync("MovePassedTo", toUser.CurrentRole );
+	public Task PassMoveFrom(Player fromUser) =>
+		_context.Clients.Client(_connections[fromUser.AppIdentity.UserName])
+			.SendAsync("MovePassedFrom", fromUser.CurrentRole);
 
 	public Task PlaceCardOnAnotherCard(Card upperCard,Card lowerCard) =>
 		_context.Clients.All.SendAsync("CardPlacedOnAnother", upperCard, lowerCard);
