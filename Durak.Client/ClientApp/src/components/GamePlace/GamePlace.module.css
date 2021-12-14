@@ -1,15 +1,21 @@
 .gamePlace {
-  width: 90%;
-  height: 90vh;
-  background: green;
+  width: 75%;
+  height: 70vh;
+  background: green url("../../../src/assets/img/green-background_5.jpg");
+  /*background-size: 1%;*/
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   /*margin: 0 auto;*/
 
   border: 50px solid #78401b;
+  
+  /*border-image: url("../../../src/assets/img/border.jpg") 80 repeat ;*/
   border-radius: 100px;
+  box-shadow: -8px 10px 12px 4px rgb(58, 30, 16);
+
 }
+
 .cards {
   display: flex;
 }

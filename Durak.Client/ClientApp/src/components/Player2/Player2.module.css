@@ -1,15 +1,73 @@
 .player2 {
-    display: flex;
-    flex-shrink: 0;
+    position: relative;
+    display: inline-flex;
     width: 100%;
     max-width: 850px;
     height: 175px;
     margin: 0 auto 25px;
-    justify-content: space-evenly;
-    /*border: 1px solid black;*/
+    justify-content: center;
+    /*
+    border: 1px solid black;
+    */
 
 }
 .card:hover {
-    margin-top: -20px;
-    transition: 0.2s;
+    margin: -20px 70px 0 30px;
 }
+
+.card {
+    z-index: 2;
+    margin-left: -40px;
+    transition: 0.4s;
+}
+
+
+
+
+/*.card:nth-child(1) {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+}
+
+.card:nth-child(2) {
+    position: absolute;
+    z-index: 2;
+    left: 60px;
+}
+
+.card:nth-child(3) {
+    position: absolute;
+    z-index: 2;
+    left: 120px;
+}
+
+.card:nth-child(4) {
+    position: absolute;
+    z-index: 2;
+    left: 180px;
+}
+
+.card:nth-child(5) {
+    position: absolute;
+    z-index: 2;
+    left: 240px;
+}
+
+.card:nth-child(6) {
+    position: absolute;
+    z-index: 2;
+    left: 240px;
+}
+
+.card:nth-child(7) {
+    position: absolute;
+    z-index: 2;
+    left: 300px;
+}
+
+.card:nth-child(8) {
+    position: absolute;
+    z-index: 2;
+    left: 360px;
+}*/

@@ -1,13 +1,13 @@
 .cardOpen {
     width: 106px;
     height: 150px;
+    border: 1px solid black;
 
-
+    box-shadow: -10px 10px 8px 0px rgba(34, 60, 80, 0.2);
+    
     border-radius: 8px;
-
+    
     background: white;
-
-   
 }
 
 

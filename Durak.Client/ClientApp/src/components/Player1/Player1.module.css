@@ -1,13 +1,22 @@
 .player1 {
-    display: flex;
+    display: inline-flex;
     flex-shrink: 0;
     width: 100%;
     margin: 25px auto 0;
     max-width: 850px;
     height: 175px;
-    justify-content: space-evenly;
+    justify-content: center;
     /*border: 1px solid black;*/
 
+    position: relative;
+
+}
+
+.card {
+    z-index: 2;
+    margin-left: -40px;
+    transition: 0.4s;
+    
 }
 
 

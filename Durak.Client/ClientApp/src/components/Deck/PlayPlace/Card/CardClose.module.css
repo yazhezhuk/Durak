@@ -4,6 +4,8 @@
     border-radius: 8px;
     overflow: hidden;
     
+    border: 1px solid black;
+    
     background-image: url('../../../../assets/img/CardClose.png');
 }
 
